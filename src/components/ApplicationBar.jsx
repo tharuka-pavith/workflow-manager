@@ -6,16 +6,26 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Stack } from '@mui/system';
+import MenuIcon from '@mui/icons-material/Menu';
 
 //import MenuIcon from '@mui/icons-material/Menu';
 
 function ApplicationBar() {
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{padding:"1rem", backgroundColor: "#364F6B"}} elevation={1}>
+        <Box sx={{ flexGrow: 1, display: 'block'}}>
+            <AppBar position="static" sx={{ padding: "1rem", backgroundColor: "#364F6B" }} elevation={1}>
                 <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
 
-                    <Stack spacing={.1} sx={{ flexGrow: 1}}> 
+                    <Stack spacing={.1} sx={{ flexGrow: 1 }}>
                         <Typography variant="h5" component="div">
                             Workflow Management System
                         </Typography>
