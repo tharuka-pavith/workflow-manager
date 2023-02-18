@@ -38,25 +38,25 @@ function Signup() {
                 <Box sx={gridStyle}>
                     <Grid container={true} spacing={4} >
                         <Grid item xs={6}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" label="First Name" variant="outlined" />
+                            <TextField sx={textFieldStyle}  label="First Name" variant="outlined" />
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" label="Last Name" variant="outlined" />
+                            <TextField sx={textFieldStyle}  label="Last Name" variant="outlined" />
                         </Grid>
                         <Grid item xs={8}>
-                            <TextField  id="outlined-basic" label="Username" variant="outlined" />
+                            <TextField   label="Username" variant="outlined" />
                         </Grid>
                         <Grid item xs={7}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" label="Email" variant="outlined" />
+                            <TextField sx={textFieldStyle}  label="Email" variant="outlined" />
                         </Grid>
                         <Grid item xs={7}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" label="Mobile" variant="outlined" />
+                            <TextField sx={textFieldStyle}  label="Mobile" variant="outlined" />
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" type={'password'} label="Password" variant="outlined" />
+                            <TextField sx={textFieldStyle}  type={'password'} label="Password" variant="outlined" />
                         </Grid>
                         <Grid item xs={6}>
-                            <TextField sx={textFieldStyle} id="outlined-basic" type={'password'} label="Confirm Password" variant="outlined" />
+                            <TextField sx={textFieldStyle}  type={'password'} label="Confirm Password" variant="outlined" />
                         </Grid>
                         <Grid item xs={6}>
                             <Button size={'large'} sx={buttonStyle} variant="outlined" color='error'>Cancel</Button>
