@@ -1,18 +1,35 @@
 import React from 'react';
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet } from "react-router-dom";
 
-import Typography  from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import ApplicationBar from '../components/ApplicationBar';
+import { Container, Box, Paper } from '@mui/material';
 
-function Home(){
-    return(
-        <div>
-        <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Welcome to Wrokflow Management System</Typography>
-        <Button size={'large'} variant="contained" color='primary'>login</Button>
-        <Button size={'large'} variant="contained" color='primary'>signup</Button>
+import backgroundImage from '../assests/imgs/background.jpg'
+const styles = {
+    paperContainer: {
+      backgroundImage: `url("${backgroundImage}")`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      height: "100vh",
+      width: "auto",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    }
+  };
 
-        <Outlet />
-        </div>
+function Home() {
+    return (
+        <Container maxWidth="xl" disableGutters>
+                <Box>
+                    <ApplicationBar />
+                </Box>
+                <Paper style={styles.paperContainer}>
+                    <Box>
+                        <Outlet />
+                    </Box>
+                </Paper>
+        </Container>
     );
 }
 
