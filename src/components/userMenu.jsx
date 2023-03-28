@@ -1,10 +1,29 @@
-import {React, useState} from "react";
+import {React} from "react";
 
 import { Menu, MenuItem, Avatar, Divider, ListItemIcon } from "@mui/material";
 
 import { PersonAdd, Settings, Logout } from "@mui/icons-material";
 
+import { getAuth, signOut } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+
 function UserMenu(props) {
+    const auth = getAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {               
+        signOut(auth).then(() => {
+        // Sign-out successful.
+            props.handleLogout(); //Handle logout functions passed from props
+            navigate("/home/welcome");
+            console.log("Signed out successfully");
+        }).catch((error) => {
+        // An error happened.
+        console.log("Error in signout");
+        console.log(error.message);
+
+        });
+    }
 
     return (
         <Menu
@@ -61,7 +80,7 @@ function UserMenu(props) {
                 </ListItemIcon>
                 Settings
             </MenuItem>
-            <MenuItem onClick={props.handleLogout}>
+            <MenuItem onClick={handleLogout}>
                 <ListItemIcon>
                     <Logout fontSize="small" />
                 </ListItemIcon>
