@@ -1,12 +1,11 @@
 import React from "react";
-import ApplicationBar from "./components/ApplicationBar";
-import SideMenu from "./components/SideMenu";
+
+import AppRouter from "./router/AppRouter";
+
 
 function App() {
   return (
-    <div>
-    <ApplicationBar />
-    </div>
+    <AppRouter />
   );
 }
 
