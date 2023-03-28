@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import ApplicationBar from '../components/ApplicationBar';
 import { Container, Box, Paper } from '@mui/material';
 
-import backgroundImage from '../assests/imgs/background.jpg'
+import backgroundImage from '../assests/imgs/background.jpg';
+
 const styles = {
     paperContainer: {
       backgroundImage: `url("${backgroundImage}")`,
@@ -24,11 +25,11 @@ function Home() {
                 <Box>
                     <ApplicationBar />
                 </Box>
-                <Paper style={styles.paperContainer}>
+                <Box style={styles.paperContainer}>
                     <Box>
                         <Outlet />
                     </Box>
-                </Paper>
+                </Box>
         </Container>
     );
 }
