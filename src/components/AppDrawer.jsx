@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import ListItem from "@mui/material/ListItem";
@@ -6,6 +6,8 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Box from '@mui/material/Box';
+import { Tooltip } from "@mui/material";
+import { Link, Outlet, useNavigate } from "react-router-dom"
 
 /*------------------Icons-------------------*/
 import CreateIcon from '@mui/icons-material/Create';
@@ -14,97 +16,38 @@ import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HistoryIcon from '@mui/icons-material/History';
 
+const drawerData = [
+    { text: "New Task", path: "/dashboard/newtask", icon: <CreateIcon sx={{ marginX: '30%' }} /> },
+    { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon sx={{ marginX: '30%' }} /> },
+    { text: "Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon sx={{ marginX: '30%' }} /> },
+    { text: "History", path: "/dashboard/history", icon: <HistoryIcon sx={{ marginX: '30%' }} /> },
+    { text: "Admin", path: "/dashboard/admin", icon: <AdminPanelSettingsIcon sx={{ marginX: '30%' }} /> },
 
-// const items = [
-//     {heading: "Create New Task", icon: {<CreateIcon/>}}, 
-//     {heading: "My Tasks"}, 
-//     {heading:"Assigned Tasks"}, 
-//     {heading:"Task History"}, 
-//     {heading:"Admin Panel"}
-// ];
+];
 
-function createList(item) {
-
-    return (
-        <ListItemButton component="a" href="menu-options" sx={{ maxHeight: "4rem" }}>
-            <ListItemText primary={item} />
-        </ListItemButton>
-    );
-}
 
 function AppDrawer() {
 
+    const navigate = useNavigate();
+
     return (
-
-        // <Paper sx={{ width: 200, maxWidth: '100%', borderRadius: 0 }} elevation={1}>
-        //   <MenuList>
-        //     <MenuItem>
-        //       <Typography variant="subtitle1"><Box sx={{textAlign: 'center'}}>Create new Task</Box></Typography>
-        //     </MenuItem>
-        //     <Divider/>
-        //     <MenuItem>
-        //       <Typography variant="subtitle1">My Approvals</Typography>
-        //     </MenuItem>
-        //     <Divider/>
-        //     <MenuItem>
-        //       <Typography variant="subtitle1">History</Typography>
-        //     </MenuItem>
-        //     <Divider/>
-        //     <MenuItem>
-        //       <Typography variant="subtitle1">Admin</Typography>
-        //     </MenuItem>
-        //   </MenuList>
-        // </Paper>
-
         <Box>
-            <Drawer variant="permanent" open sx={{ width: '100%' }}>
-                <Toolbar variant="regular" sx={{ marginTop: '30px' }} />
-                {/* {items.map(createList)} */}
-                <ListItem  disablePadding>
-                    <ListItemButton component="a" href="menu-options" sx={{ height: "4rem" }}>
-                    <ListItemText primary="New Task"  />
-                        <ListItemIcon>
-                            <CreateIcon sx={{marginX: '30%'}} />
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-
-                <ListItem  disablePadding>
-                    <ListItemButton component="a" href="menu-options" sx={{ height: "4rem" }}>
-                    <ListItemText primary="My Tasks"  />
-                        <ListItemIcon>
-                            <TaskIcon sx={{marginX: '30%'}} />
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-
-                <ListItem  disablePadding>
-                    <ListItemButton component="a" href="menu-options" sx={{ height: "4rem" }}>
-                    <ListItemText primary="Tasks"  />
-                        <ListItemIcon>
-                            <AssignmentTurnedInIcon sx={{marginX: '30%'}} />
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-
-                <ListItem  disablePadding>
-                    <ListItemButton component="a" href="menu-options" sx={{ height: "4rem" }}>
-                    <ListItemText primary="History"  />
-                        <ListItemIcon>
-                            <HistoryIcon sx={{marginX: '30%'}} />
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-
-                <ListItem  disablePadding>
-                    <ListItemButton component="a" href="menu-options" sx={{ height: "4rem" }}>
-                    <ListItemText primary="Admin"  />
-                        <ListItemIcon>
-                            <AdminPanelSettingsIcon sx={{marginX: '30%'}} />
-                        </ListItemIcon>
-                    </ListItemButton>
-                </ListItem>
-
+            <Drawer elevation={10} variant="permanent" open sx={{ width: '100%' }}>
+                <Toolbar variant="regular" sx={{ marginTop: '1rem' }} />
+                {drawerData.map((item) => {
+                    return (
+                        <ListItem disablePadding>
+                            <Tooltip title={item.text} placement='right'>
+                            <ListItemButton component="a" sx={{ height: "4rem" }} onClick={() => navigate(item.path)}>
+                                {/* <ListItemText primary={item.text} /> */}
+                                <ListItemIcon>
+                                    {item.icon}
+                                </ListItemIcon>
+                            </ListItemButton>
+                            </Tooltip>
+                        </ListItem>
+                    );
+                })}
             </Drawer>
         </Box>
     );
