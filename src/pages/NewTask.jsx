@@ -35,7 +35,7 @@ function NewTask(){
             </Grid>
 
             <Grid item xs={6}>
-                <TextField fullWidth variant='outlined' label='Task Type' select helperText='Please select task type'>
+                <TextField select fullWidth variant='outlined' label='Task Type' helperText='Please select task type'>
                 {taskTypes.map(mapTypes)}
                 </TextField>
             </Grid>
