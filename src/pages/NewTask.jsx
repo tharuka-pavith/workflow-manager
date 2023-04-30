@@ -6,17 +6,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Upload from '@mui/icons-material/Upload';
 
-
 import WorkflowSelect from '../components/WorkFlowSelect';
-
-
-
 
 function NewTask() {
     return (
         <Container maxWidth='lg' sx={{ mt: '120px', width: '100%' }} disableGutters>
             {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
-            <Typography variant='h4' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>New Task</Typography>
+            <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>New Task</Typography>
 
             <Grid container sx={{ mx: 'auto', my: '10px'}} spacing={7}>
                
