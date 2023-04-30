@@ -24,6 +24,10 @@ function uploadUserProfilePic(uid, file) {
                 case 'running':
                     console.log('Upload is running');
                     break;
+                default:
+                    console.log('Default case in switch ');
+                    break;
+
             }
         },
         (error) => {
@@ -34,6 +38,7 @@ function uploadUserProfilePic(uid, file) {
             // Handle successful uploads on complete
             // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                //TODO: Store image URL in databsase
                 console.log('File available at', downloadURL);
             });
         }

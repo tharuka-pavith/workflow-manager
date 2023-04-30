@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Box from '@mui/material/Box';
 import { Tooltip } from "@mui/material";
-import { Link, Outlet, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 /*------------------Icons-------------------*/
 import CreateIcon from '@mui/icons-material/Create';

@@ -21,7 +21,7 @@ const styles = {
         height: 'auto',
         padding: "5%",
         // margin: '20% 0 0 25%',
-        backgroundColor: "rgba(255, 255, 255, 0.95)" //set opacity of paper without affecting child components
+        backgroundColor: "rgba(255, 255, 255, 0.97)" //set opacity of paper without affecting child components
     },
     gridStyle: {
         margin: '1rem',
@@ -83,13 +83,13 @@ function Login() {
 
                         <Stack sx={{ mt: '1rem' }} direction='row' spacing={2} alignItems="center" justifyContent="center">
                             <Grid container spacing={2}>
+                            <Grid item sm={6}>
+                                    <Button sx={{ width: '100%' }} size='medium' variant="outlined" color='error'
+                                        onClick={() => navigate("/home/welcome")}>Cancel</Button>
+                                </Grid>
                                 <Grid item sm={6}>
                                     <Button sx={{ width: '100%' }} size='medium' variant="contained" color='success'
                                         onClick={() => { handleSignIn() }}>Signin</Button>
-                                </Grid>
-                                <Grid item sm={6}>
-                                    <Button sx={{ width: '100%' }} size='medium' variant="outlined" color='error'
-                                        onClick={() => navigate("/home/welcome")}>Cancel</Button>
                                 </Grid>
                             </Grid>
                         </Stack>

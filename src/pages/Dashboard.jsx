@@ -1,31 +1,22 @@
-import Box from "@mui/material/Box";
 import React from "react";
 import Grid from '@mui/material/Grid';
-import { Link, Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 
 import ApplicationBar from '../components/ApplicationBar';
 import AppDrawer from '../components/AppDrawer';
 
 function Dashboard() {
     return (
-        <Grid container>
+        <Grid container spacing={0}>
             <Grid item xs={12}>
-                <Box>
-                    <ApplicationBar />
-                </Box>
+                <ApplicationBar />
             </Grid>
 
-            <Grid item xs={1}>
-                <Box>
-                    <AppDrawer />
-                </Box>
+            <Grid item xs={12}>
+                <AppDrawer />
+                <Outlet />
             </Grid>
 
-            <Grid item xs={11}> {/*Contain different pages*/}
-                <Box>
-                    <Outlet />
-                </Box>
-            </Grid>
         </Grid>
     );
 }

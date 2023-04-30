@@ -1,8 +1,8 @@
-import {React} from "react";
+import { React } from "react";
 
-import { Menu, MenuItem, Avatar, Divider, ListItemIcon } from "@mui/material";
+import { Menu, MenuItem,  Divider, ListItemIcon, Typography, Box } from "@mui/material";
 
-import { PersonAdd, Settings, Logout } from "@mui/icons-material";
+import {  Settings, Logout, HelpCenter, Edit } from "@mui/icons-material";
 
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +11,16 @@ function UserMenu(props) {
     const auth = getAuth();
     const navigate = useNavigate();
 
-    const handleLogout = () => {               
+    const handleLogout = () => {
         signOut(auth).then(() => {
-        // Sign-out successful.
+            // Sign-out successful.
             props.handleLogout(); //Handle logout functions passed from props
             navigate("/home/welcome");
             console.log("Signed out successfully");
         }).catch((error) => {
-        // An error happened.
-        console.log("Error in signout");
-        console.log(error.message);
+            // An error happened.
+            console.log("Error in signout");
+            console.log(error.message);
 
         });
     }
@@ -61,24 +61,36 @@ function UserMenu(props) {
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-            <MenuItem onClick={props.handleProfileClose}>
-                <Avatar /> Profile
-            </MenuItem>
-            <MenuItem onClick={props.handleProfileClose}>
-                <Avatar /> My account
+            <Box sx={{py: '5%', px: '7%'}}>
+            <Typography variant='h6' textAlign='left' fontWeight="medium" component="div">
+                {auth.currentUser !== null? props.userName : ""}
+                </Typography>
+            {/* <Typography variant='subtitle1' textAlign='left'>
+                {auth.currentUser !== null? auth.currentUser.email: ""}</Typography> */}
+            </Box>
+
+            <MenuItem onClick={() => {
+                props.handleProfileClose();
+                navigate("/dashboard/editprofile");
+            }}>
+                {/* <Avatar /> */}
+                <ListItemIcon>
+                    <Edit fontSize="small" />
+                </ListItemIcon>
+                Edit My Profile
             </MenuItem>
             <Divider />
-            <MenuItem onClick={props.handleProfileClose}>
-                <ListItemIcon>
-                    <PersonAdd fontSize="small" />
-                </ListItemIcon>
-                Add another account
-            </MenuItem>
             <MenuItem onClick={props.handleProfileClose}>
                 <ListItemIcon>
                     <Settings fontSize="small" />
                 </ListItemIcon>
                 Settings
+            </MenuItem>
+            <MenuItem onClick={props.handleProfileClose}>
+                <ListItemIcon>
+                    <HelpCenter fontSize="small" />
+                </ListItemIcon>
+                Support
             </MenuItem>
             <MenuItem onClick={handleLogout}>
                 <ListItemIcon>

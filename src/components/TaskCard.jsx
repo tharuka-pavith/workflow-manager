@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { CardActionArea, CardActions, CardContent } from '@mui/material';
+import {  CardActions, CardContent } from '@mui/material';
 
 
 function TaskCard(props) {
@@ -14,7 +14,7 @@ function TaskCard(props) {
                 <Typography variant='body1' textAlign='left'>{props.details}</Typography>
             </CardContent>
             <CardActions>
-            <Button variant='text' size='small'>View More</Button>
+            <Button variant='text' size='small'>View</Button>
             </CardActions>
         </Card>
     );

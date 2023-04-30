@@ -2,7 +2,7 @@ import React from 'react';
 import { Outlet } from "react-router-dom";
 
 import ApplicationBar from '../components/ApplicationBar';
-import { Container, Box, Paper } from '@mui/material';
+import { Container, Box } from '@mui/material';
 
 import backgroundImage from '../assests/imgs/background.jpg';
 
