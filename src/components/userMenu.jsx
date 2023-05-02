@@ -80,12 +80,12 @@ function UserMenu(props) {
                 Edit My Profile
             </MenuItem>
             <Divider />
-            <MenuItem onClick={props.handleProfileClose}>
+            {/* <MenuItem onClick={props.handleProfileClose}>
                 <ListItemIcon>
                     <Settings fontSize="small" />
                 </ListItemIcon>
                 Settings
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem onClick={props.handleProfileClose}>
                 <ListItemIcon>
                     <HelpCenter fontSize="small" />
