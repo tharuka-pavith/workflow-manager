@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 //import Grid from '@mui/material/Grid';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
 
+import {Link} from 'react-router-dom';
+
 const columns = [
     { id: 'initialized_date', label: 'Date', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 100 },
@@ -23,11 +25,12 @@ const columns = [
         label: 'Assigned To',
         minWidth: 170,
     },
+    { id: 'viewmore', label: 'View', minWidth: 100, align: 'center' },
 ];
 
 function createData(initialized_date, name, description, attachments, assigned_to) {
-    
-    return { initialized_date, name, description, attachments, assigned_to}
+    const viewmore = <Link to="/dashboard/task">View more</Link>
+    return { initialized_date, name, description, attachments, assigned_to, viewmore}
 }
 const rows = [
     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "You"),
