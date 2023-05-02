@@ -20,7 +20,7 @@ const drawerData = [
     { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon sx={{ marginX: '30%' }} /> },
     { text: "Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon sx={{ marginX: '30%' }} /> },
     { text: "History", path: "/dashboard/history", icon: <HistoryIcon sx={{ marginX: '30%' }} /> },
-    { text: "Admin", path: "/dashboard/admin", icon: <AdminPanelSettingsIcon sx={{ marginX: '30%' }} /> },
+    // { text: "Admin", path: "/dashboard/admin", icon: <AdminPanelSettingsIcon sx={{ marginX: '30%' }} /> },
 
 ];
 
