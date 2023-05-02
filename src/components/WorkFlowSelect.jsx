@@ -29,7 +29,7 @@ export default function CheckboxesTags() {
       )}
       style={{ width: 500 }}
       renderInput={(params) => (
-        <TextField {...params} label="Select Workflow" placeholder="Persons" />
+        <TextField {...params} label="Select Workflow" placeholder="Add Assignees" />
       )}
     />
   );
