@@ -6,6 +6,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Upload from '@mui/icons-material/Upload';
 
+//For date picker
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+
+
 import WorkflowSelect from '../components/WorkFlowSelect';
 
 function NewTask() {
@@ -14,31 +21,36 @@ function NewTask() {
             {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
             <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>New Task</Typography>
 
-            <Grid container sx={{ mx: 'auto', my: '10px'}} spacing={7}>
-               
+            <Grid container sx={{ mx: 'auto', my: '10px' }} spacing={5}>
+
                 <Grid item xs={6}> {/*Right side of the form*/}
-                    <Grid container spacing={5}>
+                    <Grid container spacing={4}>
                         <Grid item xs={12}>
-                            <TextField fullWidth variant='outlined' label='Task Name' />
+                            <TextField variant='outlined' label='Task Name' sx={{width: '60%'}}/>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField multiline fullWidth rows={2} maxRows={2} variant='outlined' label='Description' />
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker label='Due Date' />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField multiline rows={2} maxRows={2} variant='outlined' label='Description' sx={{width: '60%'}} />
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant='subtitle1'>Attachments : </Typography>
                             <Button variant='outlined' startIcon={<Upload />}>Upload <input hidden accept="image/*" multiple type="file" /></Button>
                         </Grid>
-                        
+
                     </Grid>
                 </Grid>
 
                 <Grid item xs={6}> {/*Left Side of the form */}
-                    <WorkflowSelect fullWidth/>
+                    <WorkflowSelect fullWidth />
                 </Grid>
 
                 <Grid item alignContent={'center'} alignItems={'center'} xs={12} sx={{ width: '75%', mx: 'auto' }} >
-                            <Button size={'large'} variant="outlined" color='error' sx={{ marginRight: '20px' }}>Cancel</Button>
-                            <Button size={'large'} variant="contained" color='primary'>Submit</Button>
+                    <Button size={'large'} variant="outlined" color='error' sx={{ marginRight: '20px' }}>Cancel</Button>
+                    <Button size={'large'} variant="contained" color='primary'>Submit</Button>
                 </Grid>
 
             </Grid>
