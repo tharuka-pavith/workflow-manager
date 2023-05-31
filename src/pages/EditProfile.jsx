@@ -6,9 +6,10 @@ import { Container, Paper, Typography, Button, Grid, TextField, Stack } from "@m
 import ProfilePicture from "../components/ProfilePicture";
 
 import { getAuth, updateProfile, updateEmail } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 
 import uploadUserProfilePic from "../utils/fileUpload";
+import DeleteAccDialog from "../components/DeleteAccDialog";
 
 
 function EditProfile() {
@@ -24,7 +25,9 @@ function EditProfile() {
     const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
 
-    useEffect( ()=>{
+    const [deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+
+    useEffect(() => {
         const fetchData = async () => {
             const docRef = doc(db, "users", uid);
             const docSnap = await getDoc(docRef);
@@ -50,7 +53,7 @@ function EditProfile() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        // update displayName
+        // update authentication displayName
         if (fName !== null || fName !== "") {
             updateProfile(user, {
                 displayName: fName
@@ -63,20 +66,29 @@ function EditProfile() {
             });
         }
 
-        //update email
+        //update authentication email & email in the DB
         if (email !== null || email !== "") {
-            updateEmail(user, email).then(() => {
-                // Email updated!
-                console.log("Email updated");
-            }).catch((error) => {
-                // An error occurred
-                console.log(error.message);
-            });
+            if (email !== auth.currentUser.email) {
+                updateEmail(user, email).then(() => {
+                    // Email updated!
+                    console.log("Authentication email updated");
+                }).catch((error) => {
+                    // An error occurred
+                    console.log(error.message);
+                });        
+            }
         }
 
+        const userRef = doc(db, 'users', uid);
+        
+        async function update(){
+            await updateDoc(userRef, {fName: fName, lName:lName, email:email,mobile:mobile});
+        }
+        update();
+
         //upload profile pic
-        if (pictureFile)
-            uploadUserProfilePic(user.uid, pictureFile);
+        // if (pictureFile)
+        //     uploadUserProfilePic(user.uid, pictureFile);
     };
 
 
@@ -93,7 +105,7 @@ function EditProfile() {
                                 </Grid>
 
                                 <Grid item xs={6}>
-                                    <TextField fullWidth defaultValue={fName}  value={fName} variant="outlined" label="First Name" type="text"
+                                    <TextField fullWidth defaultValue={fName} value={fName} variant="outlined" label="First Name" type="text"
                                         onChange={(event) => setfName(event.target.value)} />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -107,21 +119,32 @@ function EditProfile() {
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <TextField defaultValue={mobile} value={mobile} variant="outlined" label="Phone" type="email"
+                                    <TextField defaultValue={mobile} value={mobile} variant="outlined" label="Phone" type="phone"
                                         onChange={(event) => setMobile(event.target.value)} />
                                 </Grid>
 
                                 <Grid item xs={12}>
-                                    <Button type="submit" variant="contained">
+                                    <Button type="submit" variant="contained" >
                                         Save
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Button type="submit" variant="contained" color="error"  
+                                    onClick={()=>{
+                                        if(!deleteDialogOpen) setDeleteDialogOpen(true);
+                                    }}>
+                                        Delete Account
+                                        <DeleteAccDialog 
+                                        open={deleteDialogOpen}
+                                        onClose={()=>{setDeleteDialogOpen(false)}}/>
                                     </Button>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={4}>
-                        
+
                             <Typography variant='h6' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Upload Profile Picture</Typography>
-                            
+
                             {/* <Typography variant='subtitle1' textAlign='left' sx={{ marginBottom: '20px' }}>User ID: {uid}</Typography> */}
                             <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" onChange={handlePictureChange} />
                         </Grid>
