@@ -5,17 +5,62 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
+import { useEffect, useState } from 'react';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
+
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function CheckboxesTags() {
+export default function CheckboxesTags(props) {
+  const {selectedValues, onChange} = props;
+
+  const db = getFirestore();
+
+  const [usersData, setUsersData] = useState([]);
+
+  const handleValueChange = (event, values) => {
+    onChange(values);
+  };
+
+  useEffect(() => {
+    const fetchUsersData = async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersRef);
+  
+        const usersDataArray = [];
+        usersSnapshot.forEach((doc) => {
+          const userData = doc.data();
+          const { user_id, fName, lName } = userData;
+  
+          // Create a map object with user_id as the key and full name as the value
+          const userMap = {
+            user_id,
+            fullName: `${fName} ${lName}`
+          };
+  
+          usersDataArray.push(userMap);
+        });
+  
+        setUsersData(usersDataArray);
+      } catch (error) {
+        console.log('Error fetching users data:', error);
+      }
+    };
+  
+    fetchUsersData();
+  }, []);
+  
+
   return (
     <Autocomplete
       multiple
       id="checkboxes-tags-demo"
-      options={top100Films}
+      options={usersData}
       disableCloseOnSelect
-      getOptionLabel={(option) => option.title}
+
+      onChange={handleValueChange}
+      getOptionLabel={(option) => option.fullName}
       renderOption={(props, option, { selected }) => (
         <li {...props}>
           <Checkbox
@@ -24,7 +69,7 @@ export default function CheckboxesTags() {
             style={{ marginRight: 8 }}
             checked={selected}
           />
-          {option.title}
+          {option.fullName}
         </li>
       )}
       style={{ width: 500 }}
