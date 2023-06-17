@@ -15,6 +15,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import MenuItem from '@mui/material/MenuItem';
 
 import WorkflowSelect from '../components/WorkFlowSelect';
+import insertTask from '../utils/insertTask';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -49,14 +50,15 @@ function NewTask() {
 
     const handleWorkflowChange = (values) => {
         setWorkflow(values);
-      };
+    };
 
     function handleSubmit(event){
-        //todo
         event.preventDefault();
         //taskTypes[taskType-1] is not used for now
         console.log(taskName,description,dueDate);
         console.log(workflow);
+        insertTask(taskName, dueDate, description, workflow); //insert task to firestore DB
+        navigate("/dashboard/mytasks"); //After insert, navigate
     }
 
     function handleDateChange(date){
