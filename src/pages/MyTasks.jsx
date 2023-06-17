@@ -6,6 +6,13 @@ import Typography from '@mui/material/Typography';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+//---------Required Firebase functions---------//
+import { getAuth } from "firebase/auth";
+import {collection, query, where, getDocs, getFirestore } from "firebase/firestore";
+//---------------------------------------------//
+
+import { useEffect } from 'react'; //react hook to load data 
+
 
 const columns = [
     { id: 'initialized_date', label: 'Date', minWidth: 100 },
@@ -31,30 +38,58 @@ const columns = [
 
 function createData(initialized_date, name, description, attachments, assigned_to) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
-    return { initialized_date, name, description, attachments, assigned_to,viewmore}
+    return { initialized_date, name, description, attachments, assigned_to,viewmore};
 }
 
-const rows = [
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "An approval letter", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 Link 2", "Mr. Nimal"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Kamal"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher lorem ipsum dolor sit amet", "Link", "Mr. Namal"),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Namal"),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
-    createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
-    createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-];
+// const rows = [
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "An approval letter", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 Link 2", "Mr. Nimal"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Kamal"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher lorem ipsum dolor sit amet", "Link", "Mr. Namal"),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Namal"),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
+//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
+//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
+// ];
 
 
 
 function MyTask(){
+    const auth = getAuth(); 
+    const db = getFirestore();
+
+    const [rows, setRows] = React.useState([]); //rows store an array of task data owned by the user
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const q = query(collection(db, "current_tasks"), where("owner_id", "==", auth.currentUser.uid)); //the query 
+            const querySnapshot = await getDocs(q);
+            const tempArr = []; //temp array to store task list
+
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                const data = doc.data();
+                const date = new Date(data.due_date).toString();
+                const temp = createData(date, data.task_name,data.description, "link", data.workflow[0].fullName);
+                tempArr.push(temp);
+                //console.log(doc.id, " => ", doc.data().workflow[0]);
+                //console.log(data.due_date);
+            });
+
+            setRows(tempArr);
+
+        };
+        fetchData();
+    }, []);
+
+    //------------ Used to manipulate the table -------------//
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -66,6 +101,7 @@ function MyTask(){
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+    //-------------------------------------------------------//
 
     return (
         <Container maxWidth="lg">
