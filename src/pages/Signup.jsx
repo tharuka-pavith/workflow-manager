@@ -78,7 +78,11 @@ function Signup() {
                 lName: lName,
                 mobile: phone,
                 email: email,
-                profile_pic_url: ""
+                profile_pic_url: "",
+                my_tasks: [],
+                assigned_tasks:[],
+                my_completed_tasks:[],
+                assigned_completed_tasks: []
               });
             console.log("Document written");
         } catch (e) {
