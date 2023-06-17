@@ -44,7 +44,7 @@ function Welcome() {
                     </Typography>
 
                     <Button size='large' variant='contained' color='success' sx={{marginRight:'2%'}} 
-                    onClick={()=>navigate('/home/signup')}>Create new Account</Button>
+                    onClick={()=>navigate('/home/signup')}>signup</Button>
                     <Typography variant='h6' component='span' fontFamily={'sans-serif'} paragraph>
                         or
                     </Typography>
