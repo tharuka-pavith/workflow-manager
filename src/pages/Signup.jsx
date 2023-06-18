@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import {  getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {  getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import firebaseApp from '../firebase/firebaseConfig';
 
 const styles = {
@@ -76,6 +76,7 @@ function Signup() {
                 user_id: uid,
                 fName: fName,
                 lName: lName,
+                full_name: fName+" "+ lName,
                 mobile: phone,
                 email: email,
                 profile_pic_url: "",
@@ -108,6 +109,17 @@ function Signup() {
 
                 //try to add user to firestore database
                 addUser(user.uid);
+
+                //try upddating display name
+                updateProfile(auth.currentUser, {
+                    displayName: "Jane Q. User"
+                  }).then(() => {
+                    // Profile updated!
+                    console.log("Display name updated");
+                  }).catch((error) => {
+                    // An error occurred
+                    console.log("Error in updating display name");
+                  });
 
                 //Navigate to the dashboard of the user
                 navigate("/dashboard/newtask");
