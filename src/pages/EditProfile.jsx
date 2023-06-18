@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-import { Container, Paper, Typography, Button, Grid, TextField, Stack } from "@mui/material";
+import { Container, Paper, Typography, Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
 
 import ProfilePicture from "../components/ProfilePicture";
 
@@ -10,6 +10,41 @@ import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 
 import uploadUserProfilePic from "../utils/fileUpload";
 import DeleteAccDialog from "../components/DeleteAccDialog";
+
+const userDesignations = [
+    {
+        value: '1',
+        label: 'Lecturer',
+    },
+    {
+        value: '2',
+        label: 'Department Head (DEIE)',
+    },
+    {
+        value: '3',
+        label: 'Department Head (CEE)',
+    },
+    {
+        value: '4',
+        label: 'Department Head (DMME)',
+    },
+    {
+        value: '5',
+        label: 'Dean (Faculty of Engineering)',
+    },
+    {
+        value: '6',
+        label: 'Assistant Registrar (Engineering)',
+    },
+    {
+        value: '7',
+        label: 'Vice Chancellor',
+    },
+    {
+        value: '8',
+        label: 'Registrar',
+    },
+];
 
 
 function EditProfile() {
@@ -25,7 +60,7 @@ function EditProfile() {
     const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
 
-    const [deleteDialogOpen, setDeleteDialogOpen ] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -75,14 +110,14 @@ function EditProfile() {
                 }).catch((error) => {
                     // An error occurred
                     console.log(error.message);
-                });        
+                });
             }
         }
 
         const userRef = doc(db, 'users', uid);
-        
-        async function update(){
-            await updateDoc(userRef, {fName: fName, lName:lName, email:email,mobile:mobile});
+
+        async function update() {
+            await updateDoc(userRef, { fName: fName, lName: lName, email: email, mobile: mobile });
         }
         update();
 
@@ -129,24 +164,43 @@ function EditProfile() {
                                     </Button>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <Button type="submit" variant="contained" color="error"  
-                                    onClick={()=>{
-                                        if(!deleteDialogOpen) setDeleteDialogOpen(true);
-                                    }}>
+                                    <Button variant="contained" color="error"
+                                        onClick={() => {
+                                            if (!deleteDialogOpen) setDeleteDialogOpen(true);
+                                        }}>
                                         Delete Account
-                                        <DeleteAccDialog 
-                                        open={deleteDialogOpen}
-                                        onClose={()=>{setDeleteDialogOpen(false)}}/>
+                                        <DeleteAccDialog
+                                            open={deleteDialogOpen}
+                                            onClose={() => { setDeleteDialogOpen(false) }} />
                                     </Button>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={4}>
 
-                            <Typography variant='h6' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Upload Profile Picture</Typography>
+                            <Typography variant='h6' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Update Designation</Typography>
+
+                            <TextField
+                                sx={{ width: '60%' }}
+                                id="outlined-select-currency"
+                                select
+                                label="Title"
+                                defaultValue="1"
+                                helperText="Select your designation"
+                            >
+                                {userDesignations.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                            <Button type="submit" variant="contained" >
+                                Update
+                            </Button>
 
                             {/* <Typography variant='subtitle1' textAlign='left' sx={{ marginBottom: '20px' }}>User ID: {uid}</Typography> */}
-                            <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" onChange={handlePictureChange} />
+                            {/* <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" 
+                            onChange={handlePictureChange} /> */}
                         </Grid>
                     </Grid>
                 </form>
