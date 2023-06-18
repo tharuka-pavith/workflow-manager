@@ -12,9 +12,12 @@ export default async function insertTask( taskName, dueDate, description, workfl
     try{
         /**Insert the task to the tasks collection */
         const date = new Date(dueDate);
+        const initialDate = new Date();
         const docRef = await addDoc(collection(db, "current_tasks"), {
             task_name: taskName,
             owner_id: auth.currentUser.uid,
+            owner_name: auth.currentUser.displayName,
+            initialized_date: initialDate.toLocaleDateString('en-GB'),
             due_date: date.toLocaleDateString('en-GB'),
             description: description,
             workflow: workflow
