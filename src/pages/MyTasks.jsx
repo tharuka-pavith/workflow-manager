@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 //import Grid from '@mui/material/Grid';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //---------Required Firebase functions---------//
 import { getAuth } from "firebase/auth";
@@ -14,8 +14,10 @@ import {collection, query, where, getDocs, getFirestore } from "firebase/firesto
 import { useEffect } from 'react'; //react hook to load data 
 
 
+
 const columns = [
-    { id: 'initialized_date', label: 'Date', minWidth: 100 },
+    { id: 'due_date', label: 'Due Date', minWidth: 100 },
+    { id: 'initialized_date', label: 'Initial Date', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 100 },
     {
         id: 'description',
@@ -32,38 +34,20 @@ const columns = [
         label: 'Assigned',
         minWidth: 170,
     },
-    { id: 'viewmore', label: 'View', minWidth: 100, align: 'center' },
+    { id: 'docId', label: 'View', minWidth: 100, align: 'center' },
 ];
 
 
-function createData(initialized_date, name, description, attachments, assigned_to) {
+function createData(due_date,initialized_date, name, description, attachments, assigned_to, docId) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
-    return { initialized_date, name, description, attachments, assigned_to,viewmore};
+    return { due_date,initialized_date, name, description, attachments, assigned_to, docId};
 }
-
-// const rows = [
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "An approval letter", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 Link 2", "Mr. Nimal"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Kamal"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher lorem ipsum dolor sit amet", "Link", "Mr. Namal"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Namal"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mr. Perera"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "Mrs. Perera "),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "Mr. Perera"),
-// ];
-
 
 
 function MyTask(){
     const auth = getAuth(); 
     const db = getFirestore();
+    const navigate = useNavigate();
 
     const [rows, setRows] = React.useState([]); //rows store an array of task data owned by the user
 
@@ -75,9 +59,11 @@ function MyTask(){
 
             querySnapshot.forEach((doc) => {
                 // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id);
                 const data = doc.data();
-                const date = new Date(data.due_date).toString();
-                const temp = createData(date, data.task_name,data.description, "link", data.workflow[0].fullName);
+                const due_date = data.due_date.toString();
+                const initialized_date = data.initialized_date;
+                const temp = createData(due_date,initialized_date, data.task_name,data.description, "link", data.workflow[0].fullName, doc.id);
                 tempArr.push(temp);
                 //console.log(doc.id, " => ", doc.data().workflow[0]);
                 //console.log(data.due_date);
@@ -100,6 +86,13 @@ function MyTask(){
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
+    };
+    //-------------------------------------------------------//
+
+    //------------ Used to navigate to the task component -------------//
+    const handleRowClick = (rowData) => {
+        //console.log(rowData.docId);
+        navigate("/dashboard/task", {state: rowData.docId});
     };
     //-------------------------------------------------------//
 
@@ -129,7 +122,7 @@ function MyTask(){
                                 .map((row) => {
                                     return (
                                         
-                                        <TableRow  hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        <TableRow onClick={()=>{handleRowClick(row);}} hover role="checkbox" tabIndex={-1} key={row.code}>
                                             {columns.map((column) => {
                                                 const value = row[column.id];
                                                 return (
