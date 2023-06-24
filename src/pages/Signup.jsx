@@ -112,7 +112,7 @@ function Signup() {
 
                 //try upddating display name
                 updateProfile(auth.currentUser, {
-                    displayName: "Jane Q. User"
+                    displayName: fName + " " + lName
                   }).then(() => {
                     // Profile updated!
                     console.log("Display name updated");
