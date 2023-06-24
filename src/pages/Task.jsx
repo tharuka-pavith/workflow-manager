@@ -30,6 +30,8 @@ import CardContent from '@mui/material/CardContent';
 
 /*************************************************************************************** */
 
+/**Task dialog */
+import TaskDialog from '../components/TaskDialog';
 
 const taskTypes = [
   { key: 1, value: 'Cash voucher' },
@@ -48,13 +50,34 @@ function mapTypes(task) {
 function Task(props) {
   const db = getFirestore();
 
-  const location = useLocation();
-  const docID = location.state;
+  const auth = getAuth();
+  const userID = auth.currentUser.uid; //to check whether step is for current user
+
+  const location = useLocation(); //retrive the state passed by navigation() from parent
+  const docID = location.state; //store dock id passed via navigation method
   //console.log("State", location.state) ;
 
   const [docData, setDocData] = useState({});
   const [workflow, setWorkflow] = useState([]);
   const [steps, setSteps] = useState([]);
+
+  const [activeStep, setActiveStep] = useState(0); //keep track of currently active step
+
+  /**Handle the Dialog */
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedStep, setSelectedStep] = useState({});
+  const handleClickOpen = () => {
+    setDialogOpen(true);
+  };
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+  const handleViewStep = (step) => {
+    setSelectedStep(step);
+    handleClickOpen();
+    console.log(step);
+  };
+  /******************* */
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +91,7 @@ function Task(props) {
   }, [docID]);
 
   useEffect(() => {
-    console.log(docData); // Will log the updated value of docData
+    console.log(docData);
     setWorkflow(docData.workflow);
     console.log(workflow);
 
@@ -88,23 +111,29 @@ function Task(props) {
     <Container maxWidth='lg' sx={{ mt: '120px', width: '100%' }} disableGutters>
       {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
       <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
+      
+      <TaskDialog open={dialogOpen} handleClose={handleClose} step={selectedStep} />
+
       <Box sx={{ width: '100%', mt: '70px' }}>
         <Stepper activeStep={1} alternativeLabel>
           {steps.map((label, index) => {
             const labelProps = {};
-            if (isStepFailed(index)) {
-              labelProps.optional = (
-                <Typography variant="caption" color="error">
-                  Alert message
-                </Typography>
-              );
+            // if (isStepFailed(index)) {
+            //   labelProps.optional = (
+            //     <Typography variant="caption" color="error">
+            //       Alert message
+            //     </Typography>
+            //   );
 
-              labelProps.error = true;
-            }
+            //   labelProps.error = true;
+            // }
 
             return (
               <Step key={label}>
-                <StepLabel {...labelProps}>{label}</StepLabel>
+                <StepLabel {...labelProps}>
+                  {label} <br/>
+                  <Button onClick={() => handleViewStep(workflow[index])}>View</Button>
+                </StepLabel>
               </Step>
             );
           })}
