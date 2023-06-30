@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
-
+//React router
 import { useNavigate } from 'react-router-dom';
 
+// MUI components
+import {Container, Paper, Typography, TextField, Grid, Box, Button} from '@mui/material';
+
+// Firebase functions
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import {  getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import firebaseApp from '../firebase/firebaseConfig';
 
+// Custom styles
 const styles = {
     paperStyles: {
         // margin: "32px",
@@ -39,6 +37,7 @@ const styles = {
     }
 }
 
+/**Signup component */
 function Signup() {
 
     // Initialize Cloud Firestore and get a reference to the service

@@ -1,12 +1,8 @@
 import * as React from 'react';
-import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
+
+// MUI components
+import {Grid, List, ListItem, ListItemIcon, ListItemText, Checkbox, Button, Paper} from '@mui/material/Grid';
+
 
 function not(a, b) {
   return a.filter((value) => b.indexOf(value) === -1);
@@ -16,6 +12,8 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
+
+/**TransferList component */
 export default function TransferList() {
   const [checked, setChecked] = React.useState([]);
   const [left, setLeft] = React.useState([0, 1, 2, 3]);

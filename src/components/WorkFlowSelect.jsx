@@ -1,17 +1,23 @@
 import * as React from 'react';
-import Checkbox from '@mui/material/Checkbox';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+
+// React hooks
+import { useEffect, useState } from 'react';
+
+// MUI components
+import {Autocomplete, TextField, Checkbox} from '@mui/material';
+
+//MUI icons
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
-import { useEffect, useState } from 'react';
+// Firebase components
 import { collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
-export default function CheckboxesTags(props) {
+/**WorkflowSelect component */
+export default function WorkflowSelect(props) {
   const {selectedValues, onChange} = props;
 
   const db = getFirestore();
@@ -79,26 +85,3 @@ export default function CheckboxesTags(props) {
     />
   );
 }
-
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
-const top100Films = [
-  { title: 'Mr. Perera', year: 1994 },
-  { title: 'Dr. Nimal', year: 1972 },
-  { title: 'Dept. Head DEIE', year: 1974 },
-  { title: 'Dept. Head CEE', year: 2008 },
-  { title: 'Dept. Head DMME', year: 1957 },
-  { title: "Dr. Kasun", year: 1993 },
-  { title: 'Ms. Kamala', year: 1994 },
-  {
-    title: 'DR. Sarath',
-    year: 2003,
-  },
-  { title: 'Assistant Registrar', year: 1966 },
-  { title: 'Dean', year: 1999 },
-  {
-    title: 'Vice Chancellor',
-    year: 2001,
-  },
- 
-  
-];

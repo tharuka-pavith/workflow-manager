@@ -1,17 +1,17 @@
 import React from "react";
 
-import AppRouter from "./router/AppRouter";
+import AppRouter from "./router/AppRouter"; //from router/AppRouter.jsx
 import FirebaseApp from './firebase/firebaseConfig';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
+/* Dark theme funcionality*/
+// const darkTheme = createTheme({
+//   palette: {
+//     mode: 'dark',
+//   },
+// });
 
 const theme = createTheme({
   typography: {
@@ -38,6 +38,7 @@ const theme = createTheme({
   },
 });
 
+/**App Component */
 function App() {
   return (
     <ThemeProvider theme={theme}>

@@ -1,3 +1,4 @@
+// Firebase functions
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 function uploadUserProfilePic(uid, file) {

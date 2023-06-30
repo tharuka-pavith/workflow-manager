@@ -1,37 +1,25 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
-import Upload from '@mui/icons-material/Upload';
-import { Divider } from '@mui/material';
+
+// React hooks
 import { useEffect, useState } from 'react';
+
+// React Router
 import { useLocation } from 'react-router-dom';
 
-/**Firebase */
+// MUI components
+import { Divider, Button, MenuItem, Typography, Container, Box, Stepper, Step, StepLabel } from '@mui/material';
+// import Card from '@mui/material/Card';
+// import CardActions from '@mui/material/CardActions';
+// import CardContent from '@mui/material/CardContent';
+
+// Firebase functions
 import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
-/***************************************************************** */
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-
-//Card UI
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+// Custom components
+import TaskDialog from '../components/TaskDialog';
 
 //const steps = ['Initiated by You', 'Dr. Nimal', 'Mr. Perera', 'Ms. Kaamala', 'Dept. Head DEIE', 'Assistant Registrar', 'ViceChancellor'];
-
-/*************************************************************************************** */
-
-/**Task dialog */
-import TaskDialog from '../components/TaskDialog';
 
 const taskTypes = [
   { key: 1, value: 'Cash voucher' },
@@ -46,7 +34,7 @@ function mapTypes(task) {
   );
 }
 
-
+/**Task component */
 function Task(props) {
   const db = getFirestore();
 

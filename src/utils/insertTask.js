@@ -1,3 +1,4 @@
+//Firebase functions
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";

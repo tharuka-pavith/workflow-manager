@@ -1,25 +1,32 @@
-import { React, useState, useEffect } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Stack from '@mui/system/Stack';
-import { Avatar } from '@mui/material';
+import React from 'react';
 
-import UserMenu from './userMenu'; //UserMenu component
+// React hooks
+import { useState, useEffect } from 'react';
+
+// React router
 import { useNavigate } from 'react-router-dom';
 
+// Firebase function
 import { getAuth } from "firebase/auth";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 
-function ApplicationBar() {
+// MUI components
+import { Avatar, Box, Toolbar, Typography, Button, Stack, AppBar } from '@mui/material';
 
+// Custom componets
+import UserMenu from './userMenu'; 
+
+/**ApplicationBar component */
+function ApplicationBar() {
+    //constants
     const auth = getAuth();
     const navigate = useNavigate();
-
     const db = getFirestore();
+
+    // states
     const [userName, setUserName] = useState('');
+
+    // useEffect hook
     useEffect(() => {
         const uid = (auth.currentUser !== null) ? auth.currentUser.uid : null;
         if (uid !== null) {

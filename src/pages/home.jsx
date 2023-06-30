@@ -1,11 +1,18 @@
 import React from 'react';
-import { Outlet } from "react-router-dom";
 
-import ApplicationBar from '../components/ApplicationBar';
+// MUI components
 import { Container, Box } from '@mui/material';
 
+// React router
+import { Outlet } from "react-router-dom";
+
+// Custom components
+import ApplicationBar from '../components/ApplicationBar';
+
+// Assets
 import backgroundImage from '../assests/imgs/background.jpg';
 
+// Custom styles for <Home>
 const styles = {
     paperContainer: {
       backgroundImage: `url("${backgroundImage}")`,
@@ -19,6 +26,7 @@ const styles = {
     }
   };
 
+/**Home component */
 function Home() {
     return (
         <Container maxWidth="xl" disableGutters>

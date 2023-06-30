@@ -1,10 +1,17 @@
 import React from "react";
-import Grid from '@mui/material/Grid';
+
+// MUI components
+import {Grid} from '@mui/material';
+
+// React router outlet
 import { Outlet } from "react-router-dom"
 
+// Custom components from ../components
 import ApplicationBar from '../components/ApplicationBar';
 import AppDrawer from '../components/AppDrawer';
 
+
+/** Dashboard component */
 function Dashboard() {
     return (
         <Grid container spacing={0}>

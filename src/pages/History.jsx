@@ -1,11 +1,12 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-//import Grid from '@mui/material/Grid';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+
+// MUI components
+import { Container, Paper, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+
+// React router
 import {Link} from 'react-router-dom';
 
+// Columns in the table
 const columns = [
     { id: 'initialized_date', label: 'Date', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 100 },
@@ -27,15 +28,13 @@ const columns = [
     { id: 'viewmore', label: 'View', minWidth: 100, align: 'center' },
 ];
 
-// function createData(name, code, population, size) {
-//     const density = population / size;
-//     return { name, code, population, size, density };
-// }
-
+/**Organize data that should be included in the table*/
 function createData(initialized_date, name, description, attachments, assigned_to) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
     return { initialized_date, name, description, attachments, assigned_to, viewmore}
 }
+
+// Dummy data (todo: delete later)
 const rows = [
     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "Mr. Perera"),
     createData(Date().toString().substring(4,15), 'Approval Letter', "An approval letter", "Link", "Mr. Perera"),
@@ -55,21 +54,24 @@ const rows = [
 
 ];
 
+/**History component */
 function History() {
-
+    //States
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+    // Table functions
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
+    //Table functions
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
 
-
+    
     return (
         <Container maxWidth="lg">
             <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}>

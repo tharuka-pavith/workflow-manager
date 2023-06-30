@@ -1,12 +1,19 @@
 import { React } from "react";
 
-import { Menu, MenuItem,  Divider, ListItemIcon, Typography, Box } from "@mui/material";
-
-import {  Settings, Logout, HelpCenter, Edit } from "@mui/icons-material";
-
-import { getAuth, signOut } from "firebase/auth";
+// React router
 import { useNavigate } from "react-router-dom";
 
+// MUI components
+import { Menu, MenuItem,  Divider, ListItemIcon, Typography, Box } from "@mui/material";
+
+// MUI icons
+import {  Settings, Logout, HelpCenter, Edit } from "@mui/icons-material";
+
+// Firebase components
+import { getAuth, signOut } from "firebase/auth";
+
+
+/**UserMenu component */
 function UserMenu(props) {
     const auth = getAuth();
     const navigate = useNavigate();

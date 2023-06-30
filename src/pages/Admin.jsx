@@ -1,10 +1,9 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 
+// MUI components
+import { Container, Typography, Grid, Paper } from '@mui/material';
 
+// Admin component
 function Admin(){
     return (
         <Container maxWidth="lg">

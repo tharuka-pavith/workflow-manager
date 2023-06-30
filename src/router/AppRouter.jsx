@@ -1,14 +1,17 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 
+//Wrapper files
 import PrivateRoute from "../utils/privateRouteWrapper";
 import PublicRoute from "../utils/publicRouteWrapper";
 
+// Public pages
 import Home from "../pages/home";
 import Signup from "../pages/Signup";
 import Login from "../pages/Login";
 import Welcome from "../pages/welcome";
 
+// Private pages
 import MyTask from "../pages/MyTasks";
 import NewTask from "../pages/NewTask";
 import TodoTask from "../pages/TodoTasks";
@@ -18,8 +21,10 @@ import Dashboard from "../pages/Dashboard";
 import EditProfile from "../pages/EditProfile";
 import Task from "../pages/Task";
 
+// Use in case of 404-Not found
 import NotFound from "../pages/NotFound";
 
+/**AppRouter Component */
 function AppRouter() {
     return (
         <Routes>

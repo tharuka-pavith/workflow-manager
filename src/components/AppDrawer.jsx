@@ -1,20 +1,16 @@
 import React from "react";
-import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Box from '@mui/material/Box';
-import { Tooltip } from "@mui/material";
+
+// MUI components
+import { Tooltip, Drawer, Toolbar, ListItem, ListItemButton, ListItemIcon, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom"
 
-/*------------------Icons-------------------*/
+// MUI icons
 import CreateIcon from '@mui/icons-material/Create';
 import TaskIcon from '@mui/icons-material/Task';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HistoryIcon from '@mui/icons-material/History';
 
+// App drawer items
 const drawerData = [
     { text: "New Task", path: "/dashboard/newtask", icon: <CreateIcon sx={{ marginX: '30%' }} /> },
     { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon sx={{ marginX: '30%' }} /> },
@@ -25,6 +21,7 @@ const drawerData = [
 ];
 
 
+/**ApDrawer component */
 function AppDrawer() {
 
     const navigate = useNavigate();

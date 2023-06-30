@@ -1,10 +1,9 @@
 import React from 'react';
-import Card from '@mui/material/Card'
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import {  CardActions, CardContent } from '@mui/material';
 
+// MUI components
+import {  CardActions, CardContent, Button, Typography, Card } from '@mui/material';
 
+/**TaskCard component */
 function TaskCard(props) {
     return (
         <Card elevation={5} sx={{width: "95%"}}>

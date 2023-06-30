@@ -1,18 +1,16 @@
 import React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import { Typography, TextField, Box } from '@mui/material';
 
+// Reac hooks
 import { useState } from 'react';
+
+// MUI components
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { Typography, TextField, Box,Button } from '@mui/material';
 
 //Firestore functions
 import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
 
-
+/**TaskDialog component */
 export default function TaskDialog(props) {
   /**
    * props.steps
