@@ -60,8 +60,10 @@ function Task(props) {
   const [docData, setDocData] = useState({});
   const [workflow, setWorkflow] = useState([]);
   const [steps, setSteps] = useState([]);
+  const [workflowIndex, setWorkflowIndex] = useState(0); //store the workflow array index
 
   const [activeStep, setActiveStep] = useState(0); //keep track of currently active step
+  const [isCurrentUser, setIsCurrentUser] = useState(false); //clicked on the current user's step
 
   /**Handle the Dialog */
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -72,10 +74,18 @@ function Task(props) {
   const handleClose = () => {
     setDialogOpen(false);
   };
-  const handleViewStep = (step) => {
+
+  const handleViewStep = (step) => { //Handle clicking of a step (step = workflow[index])
     setSelectedStep(step);
+    if(userID == step.user_id){
+      setIsCurrentUser(true);
+    }else{
+      setIsCurrentUser(false);
+    }
     handleClickOpen();
-    console.log(step);
+    console.log("step: ",step);
+    console.log(userID);
+    console.log('isCurrentUser ', isCurrentUser);
   };
   /******************* */
 
@@ -112,7 +122,8 @@ function Task(props) {
       {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
       <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
       
-      <TaskDialog open={dialogOpen} handleClose={handleClose} step={selectedStep} />
+      <TaskDialog open={dialogOpen} handleClose={handleClose} 
+      step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex}/>
 
       <Box sx={{ width: '100%', mt: '70px' }}>
         <Stepper activeStep={1} alternativeLabel>
@@ -132,7 +143,12 @@ function Task(props) {
               <Step key={label}>
                 <StepLabel {...labelProps}>
                   {label} <br/>
-                  <Button onClick={() => handleViewStep(workflow[index])}>View</Button>
+                  <Button onClick={
+                    () => {
+                      handleViewStep(workflow[index]);
+                      setWorkflowIndex(index);
+                    }
+                    }>View</Button>
                 </StepLabel>
               </Step>
             );
