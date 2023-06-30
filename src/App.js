@@ -6,6 +6,7 @@ import FirebaseApp from './firebase/firebaseConfig';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -14,9 +15,6 @@ const darkTheme = createTheme({
 
 const theme = createTheme({
   typography: {
-    button: {
-      textTransform: "none",
-    },
     fontFamily: [
       '-apple-system',
       'BlinkMacSystemFont',
@@ -30,6 +28,13 @@ const theme = createTheme({
       '"Segoe UI Symbol"',
     ].join(','),
     fontSize: 14,
+    subtitle1: {
+      fontSize: 18,
+    },
+    button: {
+      textTransform: "none",
+      fontSize: 18,
+    },
   },
 });
 
