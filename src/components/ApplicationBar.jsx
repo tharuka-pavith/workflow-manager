@@ -45,7 +45,7 @@ function ApplicationBar() {
             };
             fetchData();
         }
-    }, [auth.currentUser]);
+    }, [auth.currentUser, db]);
 
     // const [isLoggedIN, setIsLoggedIN] = useState(true);
     const [menuAnchorEl, setMenuAnchorEl] = useState(null); //Anchor element for usermenu

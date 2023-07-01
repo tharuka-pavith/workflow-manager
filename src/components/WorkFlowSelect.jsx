@@ -20,6 +20,8 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function WorkflowSelect(props) {
   const {selectedValues, onChange} = props;
 
+  console.log(selectedValues); // not necessary (Todo: remove)
+
   const db = getFirestore();
 
   const [usersData, setUsersData] = useState([]);
@@ -55,7 +57,7 @@ export default function WorkflowSelect(props) {
     };
   
     fetchUsersData();
-  }, []);
+  }, [db]);
   
 
   return (

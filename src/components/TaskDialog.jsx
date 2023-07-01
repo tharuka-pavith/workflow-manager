@@ -203,6 +203,9 @@ function RenderSpecificDialog(props) {
     setTimestamp(Date()); //get current timestamp
     setCompleted(true); //mark this step as completed
 
+    //Todo: Complete setAttachments function
+    setAttachments(['test.pdf']);
+    
     //store updated data in Json object
     const updatedData = {
       approved: approved,

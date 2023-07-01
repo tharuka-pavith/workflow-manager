@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Menu, MenuItem,  Divider, ListItemIcon, Typography, Box } from "@mui/material";
 
 // MUI icons
-import {  Settings, Logout, HelpCenter, Edit } from "@mui/icons-material";
+import {  Logout, HelpCenter, Edit } from "@mui/icons-material";
 
 // Firebase components
 import { getAuth, signOut } from "firebase/auth";

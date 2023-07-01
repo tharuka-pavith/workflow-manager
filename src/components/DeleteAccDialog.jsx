@@ -28,9 +28,9 @@ function DeleteAccDialog(props) {
 
   const { onClose, open } = props;
 
-  const handleClose = () => {
-    //onClose();
-  };
+  // const handleClose = () => {
+  //   //onClose();
+  // };
 
   async function deleteUser(){
     await deleteDoc(doc(db, "users", uid));

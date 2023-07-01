@@ -1,7 +1,7 @@
 import React from "react";
 
 // MUI components
-import {Grid} from '@mui/material';
+import { Grid } from '@mui/material';
 
 // React router outlet
 import { Outlet } from "react-router-dom"
@@ -16,12 +16,12 @@ function Dashboard() {
     return (
         <Grid container spacing={0}>
             <Grid item xs={12}>
-                <ApplicationBar />
+            <ApplicationBar />
             </Grid>
 
             <Grid item xs={12}>
-                <AppDrawer />
-                <Outlet />
+            <AppDrawer />
+            <Outlet />
             </Grid>
 
         </Grid>
