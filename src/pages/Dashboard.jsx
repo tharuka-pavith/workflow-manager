@@ -19,8 +19,8 @@ function Dashboard() {
                 <CssBaseline />
                 <ApplicationBar />
                 <AppDrawer />
-                <Box component="main" sx={{ flexGrow: 1, px: 2 }}>
-                    <Outlet />
+                <Box component="main" sx={{ flexGrow: 1, px: 2,height:"100%" }}>
+                    <Outlet/>
                 </Box>
             </Box>
         </Box>

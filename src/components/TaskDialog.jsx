@@ -105,7 +105,7 @@ function RenderNormalDialog(props) {
         maxWidth="sm"
       >
         <DialogTitle id="alert-dialog-title">
-          Assignee: {props.step.fullName}
+          Assigned to: {props.step.fullName}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -117,7 +117,7 @@ function RenderNormalDialog(props) {
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Attachments:</Typography></td>
-                  <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td>
+                  {/*TODO: <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td> */}
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Reveiewd on:</Typography></td>
@@ -233,7 +233,7 @@ function RenderSpecificDialog(props) {
 
       >
         <DialogTitle id="alert-dialog-title">
-          Assignee: {props.step.fullName}
+          Assigned to: {props.step.fullName}
         </DialogTitle>
         <DialogContent>
           <Box sx={{ my: "5%" }}>

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 // MUI components
-import { Divider, Button, MenuItem, Typography, Container, Box, Stepper, Step, StepLabel } from '@mui/material';
+import { Divider, Button, MenuItem, Typography, Container, Box, Stepper, Step, StepLabel, Grid, Paper } from '@mui/material';
 // import Card from '@mui/material/Card';
 // import CardActions from '@mui/material/CardActions';
 // import CardContent from '@mui/material/CardContent';
@@ -65,13 +65,13 @@ function Task(props) {
 
   const handleViewStep = (step) => { //Handle clicking of a step (step = workflow[index])
     setSelectedStep(step);
-    if(userID == step.user_id){
+    if (userID == step.user_id) {
       setIsCurrentUser(true);
-    }else{
+    } else {
       setIsCurrentUser(false);
     }
     handleClickOpen();
-    console.log("step: ",step);
+    console.log("step: ", step);
     console.log(userID);
     console.log('isCurrentUser ', isCurrentUser);
   };
@@ -93,7 +93,7 @@ function Task(props) {
     setWorkflow(docData.workflow);
     console.log(workflow);
 
-    workflow.forEach((e)=>{
+    workflow.forEach((e) => {
       steps.push(e.fullName);
     });
 
@@ -107,76 +107,105 @@ function Task(props) {
 
   return (
     <Container maxWidth='lg' sx={{ mt: '120px', width: '100%' }} disableGutters>
-      {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
-      <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
-      
-      <TaskDialog open={dialogOpen} handleClose={handleClose} 
-      step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex}/>
+      {/* <Paper variant='outlined' sx={{ mt: '150px', width: 'auto', mx: 'auto' }}> */}
+      <Paper elevation={12} sx={{ padding: "2%", width: 'auto', mx: 'auto' }}>
 
-      <Box sx={{ width: '100%', mt: '70px' }}>
-        <Stepper activeStep={1} alternativeLabel>
-          {steps.map((label, index) => {
-            const labelProps = {};
-            // if (isStepFailed(index)) {
-            //   labelProps.optional = (
-            //     <Typography variant="caption" color="error">
-            //       Alert message
-            //     </Typography>
-            //   );
+        <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
 
-            //   labelProps.error = true;
-            // }
+        <TaskDialog open={dialogOpen} handleClose={handleClose}
+          step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} />
 
-            return (
-              <Step key={label}>
-                <StepLabel {...labelProps}>
-                  {label} <br/>
-                  <Button onClick={
-                    () => {
-                      handleViewStep(workflow[index]);
-                      setWorkflowIndex(index);
-                    }
+        <Box sx={{ width: '100%', mt: '70px' }}>
+          <Stepper activeStep={1} alternativeLabel>
+            {steps.map((label, index) => {
+              const labelProps = {};
+              // if (isStepFailed(index)) {
+              //   labelProps.optional = (
+              //     <Typography variant="caption" color="error">
+              //       Alert message
+              //     </Typography>
+              //   );
+
+              //   labelProps.error = true;
+              // }
+
+              return (
+                <Step key={label} >
+                  <StepLabel {...labelProps}>
+                    {label} <br />
+                    <Button onClick={
+                      () => {
+                        handleViewStep(workflow[index]);
+                        setWorkflowIndex(index);
+                      }
                     }>View</Button>
-                </StepLabel>
-              </Step>
-            );
-          })}
-        </Stepper>
+                  </StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
 
-        <Divider sx={{ my: '60px' }} />
+          <Divider sx={{ my: '60px' }} />
 
-        {/* <Typography variant='subtitle1' >Task name: {docData.task_name}</Typography>
+          {/* <Typography variant='subtitle1' >Task name: {docData.task_name}</Typography>
         <Typography variant='subtitle1' >Description: {docData.description}</Typography>
         <Typography variant='subtitle1' >Initialized Date:{docData.initialized_date}</Typography>
         <Typography variant='subtitle1' >Due Date:{docData.due_date}</Typography> */}
-        <table>
-          <tbody>
-            <tr>
-              <td><Typography variant='subtitle1' >Task name:</Typography></td>
-              <td><Typography variant='subtitle1' >{docData.task_name}</Typography></td>
-            </tr>
-            <tr>
-              <td><Typography variant='subtitle1' >Description:</Typography></td>
-              <td><Typography variant='subtitle1' >{docData.description}</Typography></td>
-            </tr>
-            <tr>
-              <td><Typography variant='subtitle1' >Initialized Date:</Typography></td>
-              <td><Typography variant='subtitle1' >{docData.initialized_date}</Typography></td>
-            </tr>
-            <tr>
-              <td><Typography variant='subtitle1' >Due Date:</Typography></td>
-              <td><Typography variant='subtitle1' >{docData.due_date}</Typography></td>
-            </tr>
-            <tr>
-              <td><Typography variant='subtitle1' >Attachments:</Typography></td>
-              <td><Typography variant='subtitle1' ><a>Link</a></Typography></td>
-            </tr>
-          </tbody>
-        </table>
 
-        {/* <Typography variant='subtitle1' >Attachments: {docData.attachements}</Typography> */}
+          <Typography variant='h6' textAlign={'left'} fontWeight="medium" >Attachments: Links</Typography>
+          <Typography variant='h6' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Details:</Typography>
+          <Grid container>
+            <Grid item xs={4}>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Task: </Typography></td>
+                    <td><Typography variant='subtitle2' >{docData.task_name}</Typography></td>
+                  </tr>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Owner: </Typography></td>
+                    <td><Typography variant='subtitle2' >{docData.owner_name}</Typography></td>
+                  </tr>
+                </tbody>
+              </table>
 
-        {/* <Card sx={{ width: '40%', mx: 'auto' }} elevation={10}>
+            </Grid>
+
+            <Grid item xs={4}>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Initialized Date: </Typography></td>
+                    <td><Typography variant='subtitle2' >{docData.initialized_date}</Typography></td>
+                  </tr>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Due Date: </Typography></td>
+                    <td><Typography variant='subtitle2' >{docData.due_date}</Typography></td>
+                  </tr>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Attachments: </Typography></td>
+                    <td><Typography variant='subtitle2' ><a>Link</a></Typography></td>
+                  </tr>
+                </tbody>
+              </table>
+            </Grid>
+
+            <Grid item xs={4}>
+              <table>
+                <tbody>
+                  <tr>
+                    <td><Typography variant='subtitle2' >Description: </Typography></td>
+                    <td><Typography variant='subtitle2' >{docData.description}</Typography></td>
+                  </tr>
+                </tbody>
+              </table>
+            </Grid>
+          </Grid>
+
+
+          {/* <Typography variant='subtitle1' >Attachments: {docData.attachements}</Typography> */}
+
+          {/* <Card sx={{ width: '40%', mx: 'auto' }} elevation={10}>
           <CardContent>
             <Typography variant='h5' >
               Dr.Nimal
@@ -196,8 +225,8 @@ function Task(props) {
             <Button size="small">Contact</Button>
           </CardActions>
         </Card> */}
-      </Box>
-
+        </Box>
+      </Paper>
     </Container>
   );
 }
