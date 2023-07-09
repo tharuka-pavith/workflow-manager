@@ -15,6 +15,9 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import Fab from '@mui/material/Fab';
+import ModeNightIcon from '@mui/icons-material/ModeNight';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -45,9 +48,9 @@ import { useNavigate, Outlet } from 'react-router-dom';
 
 /* Dark theme funcionality*/
 const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
+    palette: {
+        mode: 'dark',
+    },
 });
 
 function Copyright(props) {
@@ -171,14 +174,16 @@ export default function Dashboard_v1() {
         await setMenuAnchorEl(null);
         //navigate("/home/welcome");
     }
-    
+
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
+    const [isDark, setIsDark] = useState(false);
+
     return (
-        <ThemeProvider theme={defaultTheme}>
+        <ThemeProvider theme={isDark? darkTheme : defaultTheme}>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar position="absolute" open={open}>
@@ -214,11 +219,11 @@ export default function Dashboard_v1() {
                             </Badge>
                         </IconButton>
                         <IconButton color="inherit" onClick={handleProfileClick}>
-                        {auth.currentUser !== null ? <Avatar>
-                            <img alt='person'
-                                src={`https://avatars.dicebear.com/api/initials/${userName}.svg`} />
-                        </Avatar> : "Login"}
-                    </IconButton>
+                            {auth.currentUser !== null ? <Avatar>
+                                <img alt='person'
+                                    src={`https://avatars.dicebear.com/api/initials/${userName}.svg`} />
+                            </Avatar> : "Login"}
+                        </IconButton>
                     </Toolbar>
                     <UserMenu userName={userName} menuAnchorEl={menuAnchorEl} handleProfileClose={handleProfileClose} isMenuOpen={isMenuOpen} handleLogout={handleLogout} />
                 </AppBar>
@@ -251,6 +256,11 @@ export default function Dashboard_v1() {
                             );
                         })}
                     </List>
+
+                    <Fab sx={{ position: 'fixed', bottom: 20, left: 8 }} onClick={()=> setIsDark(!isDark)} >
+                     {isDark? <ModeNightIcon/> :<LightModeIcon/>}
+                    </Fab>
+
                 </Drawer>
                 <Box
                     component="main"
