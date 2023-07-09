@@ -14,8 +14,8 @@ const styles = {
         width: '70%',
         height: 'auto',
         padding: "5%",
-        marginRight:'50%',
-        backgroundColor: "rgba(255, 255, 255, 0.95)" //set opacity of paper without affecting child components
+        mx:'auto',
+        backgroundColor: "rgba(255, 255, 255, 0.97)" //set opacity of paper without affecting child components
     },
     gridStyle: {
         margin: '1rem',
