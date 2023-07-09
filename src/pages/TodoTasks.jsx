@@ -144,8 +144,8 @@ function TodoTask(){
 
     return (
         <Container maxWidth="lg">
-            <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}>
-                <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>TODO Tasks</Typography>
+            <Paper elevation={12} sx={{p: '2%'}}>
+                <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Assigned Tasks</Typography>
 
                 <TableContainer sx={{ maxHeight: 500 }}>
                     <Table stickyHeader aria-label="sticky table">

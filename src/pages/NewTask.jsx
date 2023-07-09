@@ -68,7 +68,7 @@ function NewTask() {
     }
 
     return (
-        <Container maxWidth='lg' sx={{ mt: '110px', width: '100%' }}>
+        <Container maxWidth='lg' >
             <Paper elevation={12} sx={{ padding: '2%' }}>
                 {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
                 <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>New Task</Typography>

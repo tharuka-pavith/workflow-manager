@@ -49,8 +49,9 @@ function Task(props) {
   const [workflow, setWorkflow] = useState([]);
   const [steps, setSteps] = useState([]);
   const [workflowIndex, setWorkflowIndex] = useState(0); //store the workflow array index
+  const [rejectedAt, setRejectedAt] = useState(-1); //store the step index if the task is rejected in that step
 
-  const [activeStep, setActiveStep] = useState(0); //keep track of currently active step
+  const [activeStep, setActiveStep] = useState(0); //keep track of currently active step (using 'completed' field in the doc data)
   const [isCurrentUser, setIsCurrentUser] = useState(false); //clicked on the current user's step
 
   /**Handle the Dialog */
@@ -81,7 +82,7 @@ function Task(props) {
     const fetchData = async () => {
       const docRef = doc(db, "current_tasks", docID);
       const docSnap = await getDoc(docRef);
-      //console.log("doc data",docSnap.data());
+      console.log("doc data",docSnap.data());
       setDocData(docSnap.data());
       setWorkflow(docSnap.data().workflow);
     };
@@ -93,8 +94,18 @@ function Task(props) {
     setWorkflow(docData.workflow);
     console.log(workflow);
 
+    var i = 0; //to store current step index
+    var foundActiveStep = false; //store whether active step found or not
     workflow.forEach((e) => {
       steps.push(e.fullName);
+      if ((!foundActiveStep) && (!e.completed)){ //search for the active step
+        setActiveStep(i);
+        foundActiveStep = true;
+      }
+      if ((e.completed) && (!e.approved)){ //check for rejected step
+        setRejectedAt(i);
+      }
+      i++;
     });
 
     console.log(steps);
@@ -102,32 +113,34 @@ function Task(props) {
   }, [docData]);
 
   const isStepFailed = (step) => {
-    return step === 1;
+    if (rejectedAt !== -1){
+      return step === rejectedAt;
+    }
   };
 
   return (
-    <Container maxWidth='lg' sx={{ mt: '120px', width: '100%' }} disableGutters>
+    <Container maxWidth='lg' disableGutters>
       {/* <Paper variant='outlined' sx={{ mt: '150px', width: 'auto', mx: 'auto' }}> */}
       <Paper elevation={12} sx={{ padding: "2%", width: 'auto', mx: 'auto' }}>
 
         <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
 
         <TaskDialog open={dialogOpen} handleClose={handleClose}
-          step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} />
+          step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} activeStep={activeStep} rejectedAt={rejectedAt}/>
 
         <Box sx={{ width: '100%', mt: '70px' }}>
-          <Stepper activeStep={1} alternativeLabel>
+          <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label, index) => {
               const labelProps = {};
-              // if (isStepFailed(index)) {
-              //   labelProps.optional = (
-              //     <Typography variant="caption" color="error">
-              //       Alert message
-              //     </Typography>
-              //   );
+              if (isStepFailed(index)) {
+                labelProps.optional = (
+                  <Typography variant="caption" color="error">
+                   Task rejected!
+                  </Typography>
+                );
 
-              //   labelProps.error = true;
-              // }
+                labelProps.error = true;
+              }
 
               return (
                 <Step key={label} >
@@ -159,12 +172,12 @@ function Task(props) {
               <table>
                 <tbody>
                   <tr>
-                    <td><Typography variant='subtitle2' >Task: </Typography></td>
-                    <td><Typography variant='subtitle2' >{docData.task_name}</Typography></td>
+                    <td><Typography variant='subtitle1' >Task: </Typography></td>
+                    <td><Typography variant='subtitle1' >{docData.task_name}</Typography></td>
                   </tr>
                   <tr>
-                    <td><Typography variant='subtitle2' >Owner: </Typography></td>
-                    <td><Typography variant='subtitle2' >{docData.owner_name}</Typography></td>
+                    <td><Typography variant='subtitle1' >Owner: </Typography></td>
+                    <td><Typography variant='subtitle1' >{docData.owner_name}</Typography></td>
                   </tr>
                 </tbody>
               </table>
@@ -175,16 +188,16 @@ function Task(props) {
               <table>
                 <tbody>
                   <tr>
-                    <td><Typography variant='subtitle2' >Initialized Date: </Typography></td>
-                    <td><Typography variant='subtitle2' >{docData.initialized_date}</Typography></td>
+                    <td><Typography variant='subtitle1' >Initialized Date: </Typography></td>
+                    <td><Typography variant='subtitle1' >{docData.initialized_date}</Typography></td>
                   </tr>
                   <tr>
-                    <td><Typography variant='subtitle2' >Due Date: </Typography></td>
-                    <td><Typography variant='subtitle2' >{docData.due_date}</Typography></td>
+                    <td><Typography variant='subtitle1' >Due Date: </Typography></td>
+                    <td><Typography variant='subtitle1' >{docData.due_date}</Typography></td>
                   </tr>
                   <tr>
-                    <td><Typography variant='subtitle2' >Attachments: </Typography></td>
-                    <td><Typography variant='subtitle2' ><a>Link</a></Typography></td>
+                    <td><Typography variant='subtitle1' >Attachments: </Typography></td>
+                    <td><Typography variant='subtitle1' ><a>Link</a></Typography></td>
                   </tr>
                 </tbody>
               </table>
@@ -194,8 +207,8 @@ function Task(props) {
               <table>
                 <tbody>
                   <tr>
-                    <td><Typography variant='subtitle2' >Description: </Typography></td>
-                    <td><Typography variant='subtitle2' >{docData.description}</Typography></td>
+                    <td><Typography variant='subtitle1' >Description:{docData.description} </Typography></td>
+                    {/* <td><Typography variant='subtitle1' >{docData.description}</Typography></td> */}
                   </tr>
                 </tbody>
               </table>

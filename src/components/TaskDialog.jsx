@@ -18,14 +18,29 @@ export default function TaskDialog(props) {
    * props.handleClose
    * props.open
    * props.docID
-   * props.index
+   * props.index - store the workflow array index of clicked step
+   * props.activeStep - holds the index of ongong step (with the help of "completed" field in doc data)
+   * props.rejectedAt - stores the index of the step where rejected (if no rejects value is equal to -1)
    */
 
   //console.log("At TaskDialog :", props); //if this dialog is for current user
 
   if (props.isCurrentUser) {
     //if the dialog is for current user
-    return RenderSpecificDialog(props);
+    //return RenderSpecificDialog(props);
+    if(props.index != props.activeStep){
+      return RenderNormalDialog(props); //current user can't edit
+    }else{
+      if((props.rejectedAt != -1) && (props.index > props.rejectedAt)){
+        //There are previously rejected steps & current user step is after rejection
+        //Current user should not be able to edit his step
+        return RenderNormalDialog(props);
+      }
+      else{
+        return RenderSpecificDialog(props); //current user can edit
+      }
+      // return RenderSpecificDialog(props);
+    }
   } else {
     //if dialog is not for current user
     return RenderNormalDialog(props);
@@ -209,7 +224,7 @@ function RenderSpecificDialog(props) {
     //store updated data in Json object
     const updatedData = {
       approved: approved,
-      completed: completed,
+      completed: true,
       comments: comment,
       timestamp: timestamp,
       attachments: attachements
@@ -261,6 +276,8 @@ function RenderSpecificDialog(props) {
         <DialogActions>
           <Button onClick={props.handleClose} variant="text" color='error'>Close</Button>
           <Button onClick={() => { 
+            // if(completed){alert("You cannot edit after completing!")}
+            // else{handleSave();}
             handleSave();
             props.handleClose();
            }} autoFocus variant="outlined"

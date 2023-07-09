@@ -10,8 +10,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="text.secondary" textAlign='center'>
       {'Copyright © '}
-      <Link color="inherit" href="https://workflow-manager-e2052.web.app/home/welcome">
-        Group 17
+      <Link color="inherit" href="https://github.com/tharuka-pavith/workflow-manager">
+        WorkFlow
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
