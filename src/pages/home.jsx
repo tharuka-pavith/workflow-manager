@@ -8,6 +8,7 @@ import { Outlet } from "react-router-dom";
 
 // Custom components
 import ApplicationBar from '../components/ApplicationBar';
+import StickyFooter from '../components/StickyFooter';
 
 // Assets
 import backgroundImage from '../assests/imgs/background.jpg';
@@ -38,6 +39,7 @@ function Home() {
                         <Outlet />
                     </Box>
                 </Box>
+                <StickyFooter/>
         </Container>
     );
 }
