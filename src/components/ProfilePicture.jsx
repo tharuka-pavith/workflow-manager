@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+
+// MUI components
 import { Avatar, Button } from '@mui/material';
 
+
+/**ProfilePicture component */
 const ProfilePicture = ({ src, onChange }) => {
   const [file, setFile] = useState(null);
 

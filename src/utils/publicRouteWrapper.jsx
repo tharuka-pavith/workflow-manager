@@ -1,5 +1,7 @@
+// Firebase functions
 import { getAuth, signOut } from "firebase/auth";
-// import { useNavigate } from "react-router-dom";
+
+// React router
 import { Navigate } from "react-router-dom";
 
 const  PublicRoute = ({children}) => {

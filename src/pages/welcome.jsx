@@ -1,15 +1,13 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 
-import { Link, useNavigate } from 'react-router-dom';
+// MUI components
+import {Container, Paper, Typography, Box, Button} from '@mui/material';
 
+// React Router
+import { useNavigate } from 'react-router-dom';
+
+
+// Custom Styles
 const styles = {
     paperStyles: {
         borderRadius: '10px',
@@ -29,6 +27,7 @@ const styles = {
     },
 }
 
+/**Welcome component */
 function Welcome() {
     const navigate = useNavigate();
     return (

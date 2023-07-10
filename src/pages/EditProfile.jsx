@@ -1,16 +1,21 @@
 import React from "react";
+
+// React hooks
 import { useState, useEffect } from "react";
 
+// MUI components
 import { Container, Paper, Typography, Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
 
-import ProfilePicture from "../components/ProfilePicture";
-
+// Firebase functions
 import { getAuth, updateProfile, updateEmail } from "firebase/auth";
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 
-import uploadUserProfilePic from "../utils/fileUpload";
+// Custom components and utility files
+//import uploadUserProfilePic from "../utils/fileUpload";
+//import ProfilePicture from "../components/ProfilePicture";
 import DeleteAccDialog from "../components/DeleteAccDialog";
 
+// User designations array is required when updating user designations
 const userDesignations = [
     {
         value: '1',
@@ -47,26 +52,29 @@ const userDesignations = [
 ];
 
 
+/**Edit profile component */
 function EditProfile() {
+    //variables
     const auth = getAuth();
     const user = auth.currentUser;
     const uid = user.uid;
-
     const db = getFirestore();
 
+    //state hooks
     const [pictureFile, setPictureFile] = useState(null);
     const [fName, setfName] = useState("");
     const [lName, setlName] = useState("");
     const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
-
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+    //run when component loads
     useEffect(() => {
         const fetchData = async () => {
-            const docRef = doc(db, "users", uid);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists) {
+            const docRef = doc(db, "users", uid); //get a reference to relevant user document
+            const docSnap = await getDoc(docRef); //get a snapshot of the user document
+            
+            if (docSnap.exists) { //if the snapshot exists: update user data
                 // console.log(docSnap.data());
                 setfName(docSnap.data().fName);
                 setlName(docSnap.data().lName);
@@ -77,14 +85,19 @@ function EditProfile() {
                 console.log("No such document!");
             }
         };
-        fetchData();
-    }, []);
+        fetchData(); //run the anonymous function
+    }, []); // [] sets dependancies
 
-
+    /**
+     * Handles profile picture change
+     **/
     const handlePictureChange = (file) => {
         setPictureFile(file);
     };
 
+    /**
+     * Handles submission of user data
+     */
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -93,15 +106,15 @@ function EditProfile() {
             updateProfile(user, {
                 displayName: fName
             }).then(() => {
-                // Profile updated!
+                // After profile is updated,
                 console.log("Profile updated");
             }).catch((error) => {
-                // An error occurred
+                // If an error occurred
                 console.log(error.message);
             });
         }
 
-        //update authentication email & email in the DB
+        //update authentication email & email in the firestore DB
         if (email !== null || email !== "") {
             if (email !== auth.currentUser.email) {
                 updateEmail(user, email).then(() => {
@@ -114,16 +127,16 @@ function EditProfile() {
             }
         }
 
-        const userRef = doc(db, 'users', uid);
+        const userRef = doc(db, 'users', uid); //get a reference for the user from DB
 
-        async function update() {
+        async function update() { //Update the user information
             await updateDoc(userRef, { fName: fName, lName: lName, email: email, mobile: mobile });
         }
         update();
 
         //upload profile pic
         // if (pictureFile)
-        //     uploadUserProfilePic(user.uid, pictureFile);
+        //    uploadUserProfilePic(user.uid, pictureFile);
     };
 
 
@@ -204,9 +217,6 @@ function EditProfile() {
                         </Grid>
                     </Grid>
                 </form>
-
-
-
             </Paper>
         </Container >
     );

@@ -1,11 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import Button from '@mui/material/Button';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
 
-import { getAuth, deleteUser } from "firebase/auth";
+// MUI material
+import {Dialog, DialogTitle, Button} from '@mui/material';
+
+// React router
 import { useNavigate } from 'react-router-dom';
+
+//Firebase functions
+import { getAuth} from "firebase/auth";
 import { doc, deleteDoc, getFirestore } from "firebase/firestore";
 
 DeleteAccDialog.propTypes = {
@@ -25,9 +28,9 @@ function DeleteAccDialog(props) {
 
   const { onClose, open } = props;
 
-  const handleClose = () => {
-    //onClose();
-  };
+  // const handleClose = () => {
+  //   //onClose();
+  // };
 
   async function deleteUser(){
     await deleteDoc(doc(db, "users", uid));

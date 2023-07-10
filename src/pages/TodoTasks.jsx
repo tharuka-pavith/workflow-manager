@@ -1,21 +1,24 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-//import Grid from '@mui/material/Grid';
+
+// React hooks
+import { useEffect } from 'react'; 
+
+//MUI components
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+import {Container, Paper, Typography} from '@mui/material';
 
-import {Link} from 'react-router-dom';
+// React router
+import { Link, useNavigate } from 'react-router-dom';
 
-//---------Required Firebase functions---------//
+// Firebase functions
 import { getAuth } from "firebase/auth";
-import {collection, query, where, getDocs, getFirestore,doc, getDoc } from "firebase/firestore";
-//---------------------------------------------//
+import { getFirestore,doc, getDoc } from "firebase/firestore";
 
-import { useEffect } from 'react'; //react hook to load data 
+
 
 const columns = [
-    { id: 'initialized_date', label: 'Date', minWidth: 100 },
+    { id: 'due_date', label: 'Date', minWidth: 100 },
+    { id: 'initialized_date', label: 'Initial Date', minWidth: 100 },
     { id: 'name', label: 'Name', minWidth: 100 },
     {
         id: 'description',
@@ -32,34 +35,21 @@ const columns = [
         label: 'Assigned',
         minWidth: 170,
     },
-    { id: 'viewmore', label: 'View', minWidth: 100, align: 'center' },
+    { id: 'docId', label: 'View', minWidth: 100, align: 'center' },
 ];
 
-function createData(initialized_date, name, description, attachments, assigned_to) {
-    const viewmore = <Link to="/dashboard/task">View more</Link>
-    return { initialized_date, name, description, attachments, assigned_to, viewmore}
-}
-// const rows = [
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 link2 link3", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "An approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link1 Link 2", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "an approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher lorem ipsum dolor sit amet", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Approval Letter', "approval letter", "Link", "You"),
-//     createData(Date().toString().substring(4,15), 'Cash Voucher', "This is the description for voucher ", "Link", "You"),
-// ];
 
+/**Organize data that should be included in the table*/
+function createData(due_date,initialized_date, name, description, attachments, assigned_to, docId) {
+    const viewmore = <Link to="/dashboard/task">View more</Link>
+    return { due_date,initialized_date, name, description, attachments, assigned_to, docId};
+}
+
+/**TodoTask component */
 function TodoTask(){
     const auth = getAuth(); 
     const db = getFirestore();
+    const navigate = useNavigate();
     
     const [rows, setRows] = React.useState([]);
 
@@ -111,13 +101,15 @@ function TodoTask(){
       
               const data = taskSnap.data();
               console.log("data ", data);
-              const date = new Date(data.due_date).toString();
+              
               return createData(
-                date,
+                data.due_date.toString(),
+                data.initialized_date,
                 data.task_name,
                 data.description,
                 "link",
-                data.workflow[0].fullName
+                data.workflow[0].fullName,
+                id
               );
             })
           );
@@ -128,7 +120,8 @@ function TodoTask(){
       
         fetchData();
       }, []);
-      
+    
+    /********* Used to manipulate the table **********/
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -140,6 +133,14 @@ function TodoTask(){
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+    /*************************************************/
+
+    /******** Used to navigate to the task component ******/
+    const handleRowClick = (rowData) => {
+        //console.log(rowData.docId);
+        navigate("/dashboard/task", {state: rowData.docId});
+    };
+    /******************************************************/
 
     return (
         <Container maxWidth="lg">
@@ -166,7 +167,7 @@ function TodoTask(){
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row) => {
                                     return (
-                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                        <TableRow  onClick={()=>{handleRowClick(row);}} hover role="checkbox" tabIndex={-1} key={row.code}>
                                             {columns.map((column) => {
                                                 const value = row[column.id];
                                                 return (

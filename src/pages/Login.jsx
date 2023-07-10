@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
 
-import CustomAlert from '../components/Alerts';
+// MUI components
+import {Container, Paper, Typography, TextField, Stack, Box, Button, Grid} from '@mui/material';
 
+// React Router
 import { Link, useNavigate } from 'react-router-dom';
 
+//Firebase functions
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+// Custom components
+import CustomAlert from '../components/Alerts';
+
+// Custom styles for <Login>
 const styles = {
     paperStyles: {
         borderRadius: '10px',
@@ -33,13 +32,17 @@ const styles = {
     },
 }
 
+/**Login component */
 function Login() {
     const auth = getAuth();
+
+    //States
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [alert, setAlert] = useState({message:"", severity:"", open:false});
 
-    const [alert, setAlert] = useState({message:"", severity:"", open:false})
+    //Handle alert closing
     const handleAlertClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -47,6 +50,7 @@ function Login() {
         setAlert({message:'', severity:"", open:false});
     };
 
+    /**Handle th sign in function */
     function handleSignIn() {
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {

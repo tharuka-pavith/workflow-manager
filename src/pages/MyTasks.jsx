@@ -1,20 +1,22 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-//import Grid from '@mui/material/Grid';
+
+// React hooks
+import { useEffect } from 'react'; //react hooks
+
+// MUI components
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
+import {Container, Paper, Typography} from '@mui/material';
+
+// React router
 import { Link, useNavigate } from 'react-router-dom';
 
-//---------Required Firebase functions---------//
+//Firebase functions
 import { getAuth } from "firebase/auth";
 import {collection, query, where, getDocs, getFirestore } from "firebase/firestore";
-//---------------------------------------------//
 
-import { useEffect } from 'react'; //react hook to load data 
+ 
 
-
-
+// Columns in the table
 const columns = [
     { id: 'due_date', label: 'Due Date', minWidth: 100 },
     { id: 'initialized_date', label: 'Initial Date', minWidth: 100 },
@@ -37,13 +39,13 @@ const columns = [
     { id: 'docId', label: 'View', minWidth: 100, align: 'center' },
 ];
 
-
+/**Organize data that should be included in the table*/
 function createData(due_date,initialized_date, name, description, attachments, assigned_to, docId) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
     return { due_date,initialized_date, name, description, attachments, assigned_to, docId};
 }
 
-
+/**MyTask component */
 function MyTask(){
     const auth = getAuth(); 
     const db = getFirestore();

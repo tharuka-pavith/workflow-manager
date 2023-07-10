@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Upload from '@mui/icons-material/Upload';
-import { Paper } from '@mui/material';
+
+// React router hooks
+import { useNavigate } from 'react-router-dom';
+
+// MUI components
+import { Paper, Container, Typography, Grid, TextField, Button, MenuItem } from '@mui/material';
+
+// MUI icons
+import { Upload } from '@mui/icons-material';
 
 //For date picker
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import MenuItem from '@mui/material/MenuItem';
-
+//Custom components and utils
 import WorkflowSelect from '../components/WorkFlowSelect';
 import insertTask from '../utils/insertTask';
 
-import { useNavigate } from 'react-router-dom';
 
 const taskTypes = [
     {
@@ -38,6 +38,7 @@ const taskTypes = [
     },
 ];
 
+/**NewTask component */
 function NewTask() {
 
     const navigate = useNavigate();

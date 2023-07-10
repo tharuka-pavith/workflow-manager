@@ -1,13 +1,16 @@
-// Import the functions you need from the SDKs you need
+// Import the functions needed from the SDKs
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
+
+// TODO: Add SDKs for Firebase products that we want to use
 import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 import {getFirestore} from "firebase/firestore";
+
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-//Use "dotenv": "^16.0.3", in package.json if necessary
+// Use "dotenv": "^16.0.3", in package.json if necessary
+// Important: Please include .env file in root directory
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -24,9 +27,13 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
 
+// Initialize analytics
 export const analytics = getAnalytics(app);
+
+// Initialize firebase file storage
 export const storage = getStorage(app);
 
 // Initialize Cloud Firestore and get a reference to the service
-const db = getFirestore(app);
+export const db = getFirestore(app);
+
 export default app;
