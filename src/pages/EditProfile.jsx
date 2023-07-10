@@ -73,7 +73,7 @@ function EditProfile() {
         const fetchData = async () => {
             const docRef = doc(db, "users", uid); //get a reference to relevant user document
             const docSnap = await getDoc(docRef); //get a snapshot of the user document
-            
+
             if (docSnap.exists) { //if the snapshot exists: update user data
                 // console.log(docSnap.data());
                 setfName(docSnap.data().fName);
@@ -141,55 +141,54 @@ function EditProfile() {
 
 
     return (
-        <Container maxWidth="lg" disableGutters>
-            <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}>
-                <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Edit Profile</Typography>
+        <Container maxWidth="sm" disableGutters>
+            {/* <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}> */}
+            <Paper elevation={12} sx={{ p: '5%' }} >
+                <Typography variant='h5' textAlign='center' fontWeight="medium" sx={{ my: '10px' }}>Edit Profile</Typography>
+                
                 <form onSubmit={handleSubmit}>
-                    <Grid container spacing={5}>
-                        <Grid item xs={5}>
-                            <Grid container spacing={3}>
-                                <Grid item xs={12}>
-                                    <Typography variant='h6' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Edit Personal Details</Typography>
-                                </Grid>
+                    <Grid container spacing={3}>
+                        {/* <Grid item xs={12}>
+                            <Typography variant='h6' textAlign='center' fontWeight="medium" sx={{ my: '10px' }}>Edit Personal Details</Typography>
+                        </Grid> */}
 
-                                <Grid item xs={6}>
-                                    <TextField fullWidth defaultValue={fName} value={fName} variant="outlined" label="First Name" type="text"
-                                        onChange={(event) => setfName(event.target.value)} />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <TextField fullWidth defaultValue={lName} value={lName} variant="outlined" label="Last Name" type="text"
-                                        onChange={(event) => setlName(event.target.value)} />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <TextField fullWidth defaultValue={email} value={email} variant="outlined" label="Email Address" type="email"
-                                        onChange={(event) => setEmail(event.target.value)} />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <TextField defaultValue={mobile} value={mobile} variant="outlined" label="Phone" type="phone"
-                                        onChange={(event) => setMobile(event.target.value)} />
-                                </Grid>
-
-                                <Grid item xs={12}>
-                                    <Button type="submit" variant="contained" >
-                                        Save
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Button variant="contained" color="error"
-                                        onClick={() => {
-                                            if (!deleteDialogOpen) setDeleteDialogOpen(true);
-                                        }}>
-                                        Delete Account
-                                        <DeleteAccDialog
-                                            open={deleteDialogOpen}
-                                            onClose={() => { setDeleteDialogOpen(false) }} />
-                                    </Button>
-                                </Grid>
-                            </Grid>
+                        <Grid item xs={6}>
+                            <TextField fullWidth defaultValue={fName} value={fName} variant="outlined" label="First Name" type="text"
+                                onChange={(event) => setfName(event.target.value)} />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={6}>
+                            <TextField fullWidth defaultValue={lName} value={lName} variant="outlined" label="Last Name" type="text"
+                                onChange={(event) => setlName(event.target.value)} />
+                        </Grid>
+
+                        <Grid item xs={8}>
+                            <TextField fullWidth defaultValue={email} value={email} variant="outlined" label="Email Address" type="email"
+                                onChange={(event) => setEmail(event.target.value)} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <TextField defaultValue={mobile} value={mobile} variant="outlined" label="Phone" type="phone"
+                                onChange={(event) => setMobile(event.target.value)} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Button type="submit" variant="contained" >
+                                Save
+                            </Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button variant="contained" color="error"
+                                onClick={() => {
+                                    if (!deleteDialogOpen) setDeleteDialogOpen(true);
+                                }}>
+                                Delete Account
+                                <DeleteAccDialog
+                                    open={deleteDialogOpen}
+                                    onClose={() => { setDeleteDialogOpen(false) }} />
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    {/* <Grid item xs={4}>
 
                             <Typography variant='h6' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Update Designation</Typography>
 
@@ -209,13 +208,13 @@ function EditProfile() {
                             </TextField>
                             <Button type="submit" variant="contained" >
                                 Update
-                            </Button>
+                            </Button> */}
 
-                            {/* <Typography variant='subtitle1' textAlign='left' sx={{ marginBottom: '20px' }}>User ID: {uid}</Typography> */}
-                            {/* <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" 
+                    {/* <Typography variant='subtitle1' textAlign='left' sx={{ marginBottom: '20px' }}>User ID: {uid}</Typography> */}
+                    {/* <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" 
                             onChange={handlePictureChange} /> */}
-                        </Grid>
-                    </Grid>
+                    {/* </Grid> */}
+
                 </form>
             </Paper>
         </Container >

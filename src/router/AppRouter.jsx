@@ -20,6 +20,7 @@ import Admin from "../pages/Admin";
 import Dashboard from "../pages/Dashboard";
 import EditProfile from "../pages/EditProfile";
 import Task from "../pages/Task";
+import Dashboard_v1 from "../pages/Dashboard_v1";
 
 // Use in case of 404-Not found
 import NotFound from "../pages/NotFound";
@@ -36,7 +37,7 @@ function AppRouter() {
             </Route>
 
             {/** PrivateRouter is used to protect dashboard routes */}
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} > 
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard_v1 /></PrivateRoute>} > 
                 <Route path="/dashboard/newtask" element={<NewTask />} />
                 <Route path="/dashboard/task" element={<Task />} />
                 <Route path="/dashboard/mytasks" element={<MyTask />} />

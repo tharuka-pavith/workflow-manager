@@ -69,7 +69,7 @@ function UserMenu(props) {
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
             <Box sx={{py: '5%', px: '7%'}}>
-            <Typography variant='h6' textAlign='left' fontWeight="medium" component="div">
+            <Typography variant='h6' textAlign='center' fontWeight="medium" component="div">
                 {auth.currentUser !== null? props.userName : ""}
                 </Typography>
             {/* <Typography variant='subtitle1' textAlign='left'>

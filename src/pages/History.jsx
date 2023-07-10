@@ -74,7 +74,8 @@ function History() {
     
     return (
         <Container maxWidth="lg">
-            <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}>
+            {/* <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}> */}
+            <Paper elevation={12} sx={{p: '2%'}}>
                 <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Tasks History</Typography>
 
                 <TableContainer sx={{ maxHeight: 500 }}>
