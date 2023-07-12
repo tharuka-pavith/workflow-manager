@@ -8,6 +8,8 @@ import { Outlet } from "react-router-dom";
 
 // Custom components
 import ApplicationBar from '../components/ApplicationBar';
+import StickyFooter from '../components/StickyFooter';
+
 
 // Assets
 import backgroundImage from '../assests/imgs/background.jpg';
@@ -15,9 +17,8 @@ import backgroundImage from '../assests/imgs/background.jpg';
 // Custom styles for <Home>
 const styles = {
     paperContainer: {
-      backgroundImage: `url("${backgroundImage}")`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
+      
+      
       height: "100vh",
       width: "auto",
       display: "flex",
@@ -34,10 +35,11 @@ function Home() {
                     <ApplicationBar />
                 </Box>
                 <Box style={styles.paperContainer}>
-                    <Box>
+                    
                         <Outlet />
-                    </Box>
+                    
                 </Box>
+                <StickyFooter/>
         </Container>
     );
 }

@@ -14,7 +14,8 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { Avatar, Box, Toolbar, Typography, Button, Stack, AppBar } from '@mui/material';
 
 // Custom componets
-import UserMenu from './userMenu'; 
+import UserMenu from './userMenu';
+
 
 /**ApplicationBar component */
 function ApplicationBar() {
@@ -70,8 +71,7 @@ function ApplicationBar() {
     return (
         <Box sx={{ flexGrow: 1, display: 'flex', width: "100%", zIndex: 'modal', position: 'fixed', top: 0, marginX: 0 }}>
 
-            {/* <Box sx={{ flexGrow: 1, display: 'flex', width: "100%", zIndex: 'tooltip', position: 'fixed', top: 0, marginX: 0}}> */}
-            <AppBar position="static" sx={{ padding: ".5rem", backgroundColor: "#364F6B" }} elevation={1}>
+            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar>
 
                     <Stack spacing={0.1} sx={{ flexGrow: 1 }}>

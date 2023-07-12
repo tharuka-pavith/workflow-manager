@@ -1,6 +1,7 @@
 import React from "react";
 
 // MUI components
+
 import { Tooltip, Drawer, Toolbar, ListItem, ListItemButton, ListItemIcon, ListItemText, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom"
 
@@ -12,10 +13,10 @@ import HistoryIcon from '@mui/icons-material/History';
 
 // App drawer items
 const drawerData = [
-    { text: "New Task", path: "/dashboard/newtask", icon: <CreateIcon sx={{ marginX: '30%' }} /> },
-    { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon sx={{ marginX: '30%' }} /> },
-    { text: "Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon sx={{ marginX: '30%' }} /> },
-    { text: "History", path: "/dashboard/history", icon: <HistoryIcon sx={{ marginX: '30%' }} /> },
+    { text: "New Task", path: "/dashboard/newtask", icon: <CreateIcon  /> },
+    { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon /> },
+    { text: "Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon /> },
+    { text: "History", path: "/dashboard/history", icon: <HistoryIcon  /> },
     // { text: "Admin", path: "/dashboard/admin", icon: <AdminPanelSettingsIcon sx={{ marginX: '30%' }} /> },
 
 ];
@@ -23,29 +24,34 @@ const drawerData = [
 
 /**ApDrawer component */
 function AppDrawer() {
-
+    const drawerWidth = 200;
     const navigate = useNavigate();
 
-    return (
-        <Box>
-            <Drawer elevation={10} variant="permanent" open sx={{ width: '100%' }}>
-                <Toolbar variant="regular" sx={{ marginTop: '1rem' }} />
+    return (   
+            <Drawer variant="permanent" sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+            }}>
+                {/* <Toolbar variant="regular" sx={{ marginTop: '1rem' }} /> */}
+                <Toolbar />
+                <Box sx={{ overflow: 'auto' }}>
+                <List>
                 {drawerData.map((item) => {
                     return (
-                        <ListItem disablePadding>
-                            <Tooltip title={item.text} placement='right'>
-                            <ListItemButton component="a" sx={{ height: "4rem" }} onClick={() => navigate(item.path)}>
-                                {/* <ListItemText primary={item.text} /> */}
-                                <ListItemIcon>
-                                    {item.icon}
-                                </ListItemIcon>
-                            </ListItemButton>
-                            </Tooltip>
+                        <ListItem disablePadding key={item.text} >
+                                <ListItemButton sx={{ height: "4rem" }} onClick={() => navigate(item.path)}>
+                                    <ListItemIcon>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={item.text} />
+                                </ListItemButton>
                         </ListItem>
                     );
                 })}
+                </List>
+                </Box>
             </Drawer>
-        </Box>
     );
 }
 

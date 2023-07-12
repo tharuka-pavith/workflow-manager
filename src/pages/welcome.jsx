@@ -14,8 +14,8 @@ const styles = {
         width: '70%',
         height: 'auto',
         padding: "5%",
-        marginRight:'50%',
-        backgroundColor: "rgba(255, 255, 255, 0.95)" //set opacity of paper without affecting child components
+        mx:'auto',
+        backgroundColor: "rgba(255, 255, 255, 0.97)" //set opacity of paper without affecting child components
     },
     gridStyle: {
         margin: '1rem',
@@ -43,7 +43,7 @@ function Welcome() {
                     </Typography>
 
                     <Button size='large' variant='contained' color='success' sx={{marginRight:'2%'}} 
-                    onClick={()=>navigate('/home/signup')}>signup</Button>
+                    onClick={()=>navigate('/home/signup')}>Signup</Button>
                     <Typography variant='h6' component='span' fontFamily={'sans-serif'} paragraph>
                         or
                     </Typography>

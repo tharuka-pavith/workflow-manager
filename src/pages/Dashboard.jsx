@@ -1,7 +1,8 @@
 import React from "react";
 
 // MUI components
-import { Grid } from '@mui/material';
+import { Box, CssBaseline } from '@mui/material';
+
 
 // React router outlet
 import { Outlet } from "react-router-dom"
@@ -14,17 +15,16 @@ import AppDrawer from '../components/AppDrawer';
 /** Dashboard component */
 function Dashboard() {
     return (
-        <Grid container spacing={0}>
-            <Grid item xs={12}>
-            <ApplicationBar />
-            </Grid>
-
-            <Grid item xs={12}>
-            <AppDrawer />
-            <Outlet />
-            </Grid>
-
-        </Grid>
+        <Box>
+            <Box sx={{ display: 'flex' }}>
+                <CssBaseline />
+                <ApplicationBar />
+                <AppDrawer />
+                <Box component="main" sx={{ flexGrow: 1, px: 2,height:"100%" }}>
+                    <Outlet/>
+                </Box>
+            </Box>
+        </Box>
     );
 }
 

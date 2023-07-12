@@ -68,8 +68,8 @@ function NewTask() {
     }
 
     return (
-        <Container maxWidth='lg' sx={{ mt: '120px', width: '100%' }}>
-            <Paper elevation={7} sx={{ padding: '2%' }}>
+        <Container maxWidth='lg' >
+            <Paper elevation={12} sx={{ padding: '2%' }}>
                 {/* <Paper variant='outlined' sx={{mt: '150px', width: '50%', mx:'auto'}}> */}
                 <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>New Task</Typography>
 
@@ -111,7 +111,7 @@ function NewTask() {
 
                     <Grid item xs={5}> {/*Left Side of the form */}
                         <Grid container spacing={4}>
-                            <Grid item xs={12}>
+                            {/* <Grid item xs={12}>
                                 <TextField
                                     sx={{ width: '60%' }}
                                     id="outlined-select-currency"
@@ -128,7 +128,7 @@ function NewTask() {
                                         </MenuItem>
                                     ))}
                                 </TextField>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={12}>
                                 <WorkflowSelect fullWidth 
