@@ -17,11 +17,16 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 //import Link_router from 'react-router-dom';
 
+import backgroundImage from '../assests/imgs/background.jpg';
+
 //Firebase functions
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
+import { useState } from 'react';
+
 // Custom components
 import CustomAlert from '../components/Alerts';
+import { logDOM } from '@testing-library/react';
 
 function Copyright(props) {
   return (
@@ -41,14 +46,49 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+
+    const auth = getAuth();
+
+    //States
+    const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [alert, setAlert] = useState({message:"", severity:"", open:false});
+
+    //Handle alert closing
+    const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlert({message:'', severity:"", open:false});
+    };
+
+    /**Handle th sign in function */
+    function handleSignIn() {
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                console.log("Login Successful!!");
+                navigate("/dashboard/mytasks");
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorMessage);
+
+                setAlert({message:errorCode, severity:"error", open:true});
+            });
+    }
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get('email'),
+  //     password: data.get('password'),
+  //   });
+  // };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -60,7 +100,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: 'url(https://source.unsplash.com/random?wallpapers)',
+            backgroundImage: `url("${backgroundImage}")`,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
               t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
@@ -84,7 +124,7 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <Box  sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -94,6 +134,7 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={(event) =>setEmail(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -104,16 +145,18 @@ export default function SignInSide() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={(event) => setPassword(event.target.value)}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
               <Button
-                type="submit"
+                
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={(e)=>handleSignIn()}
               >
                 Sign In
               </Button>
