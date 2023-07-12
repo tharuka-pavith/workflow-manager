@@ -20,7 +20,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 export default function WorkflowSelect(props) {
   const {selectedValues, onChange} = props;
 
-  console.log(selectedValues); // not necessary (Todo: remove)
+  //console.log(selectedValues); // not necessary (Todo: remove)
 
   const db = getFirestore();
 
@@ -82,7 +82,7 @@ export default function WorkflowSelect(props) {
       )}
       style={{ width: 500 }}
       renderInput={(params) => (
-        <TextField {...params} label="Select Workflow" placeholder="Add Assignees" helperText="Select assignees"/>
+        <TextField {...params} label="Select People" placeholder="Add Assignees" helperText="Select people that you want to add to the workflow and click Add button"/>
       )}
     />
   );
