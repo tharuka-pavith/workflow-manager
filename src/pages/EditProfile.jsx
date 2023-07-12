@@ -213,6 +213,7 @@ function EditProfile() {
                     {/* <Typography variant='subtitle1' textAlign='left' sx={{ marginBottom: '20px' }}>User ID: {uid}</Typography> */}
                     {/* <ProfilePicture src="https://firebasestorage.googleapis.com/v0/b/workflow-manager-30001.appspot.com/o/users%2FrVtpKQCyKzWCxEOpON556pjDs7Y2%2FProfilePic?alt=media&token=cf0a7093-9b66-4231-a661-fd569ee2ae6a" 
                             onChange={handlePictureChange} /> */}
+
                     {/* </Grid> */}
 
                 </form>

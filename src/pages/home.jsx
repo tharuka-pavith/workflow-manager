@@ -10,6 +10,7 @@ import { Outlet } from "react-router-dom";
 import ApplicationBar from '../components/ApplicationBar';
 import StickyFooter from '../components/StickyFooter';
 
+
 // Assets
 import backgroundImage from '../assests/imgs/background.jpg';
 

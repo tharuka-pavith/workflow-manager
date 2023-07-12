@@ -3,6 +3,7 @@ import React from "react";
 // MUI components
 import { Box, CssBaseline } from '@mui/material';
 
+
 // React router outlet
 import { Outlet } from "react-router-dom"
 

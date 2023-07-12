@@ -8,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 
 // MUI components
 import { Divider, Button, MenuItem, Typography, Container, Box, Stepper, Step, StepLabel, Grid, Paper } from '@mui/material';
+
 // import Card from '@mui/material/Card';
 // import CardActions from '@mui/material/CardActions';
 // import CardContent from '@mui/material/CardContent';
@@ -50,7 +51,6 @@ function Task(props) {
   const [steps, setSteps] = useState([]);
   const [workflowIndex, setWorkflowIndex] = useState(0); //store the workflow array index
   const [rejectedAt, setRejectedAt] = useState(-1); //store the step index if the task is rejected in that step
-
   const [activeStep, setActiveStep] = useState(0); //keep track of currently active step (using 'completed' field in the doc data)
   const [isCurrentUser, setIsCurrentUser] = useState(false); //clicked on the current user's step
 
@@ -73,6 +73,7 @@ function Task(props) {
     }
     handleClickOpen();
     console.log("step: ", step);
+
     console.log(userID);
     console.log('isCurrentUser ', isCurrentUser);
   };
@@ -161,6 +162,7 @@ function Task(props) {
           <Divider sx={{ my: '60px' }} />
 
           {/* <Typography variant='subtitle1' >Task name: {docData.task_name}</Typography>
+
         <Typography variant='subtitle1' >Description: {docData.description}</Typography>
         <Typography variant='subtitle1' >Initialized Date:{docData.initialized_date}</Typography>
         <Typography variant='subtitle1' >Due Date:{docData.due_date}</Typography> */}

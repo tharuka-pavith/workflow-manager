@@ -21,6 +21,7 @@ export default function TaskDialog(props) {
    * props.index - store the workflow array index of clicked step
    * props.activeStep - holds the index of ongong step (with the help of "completed" field in doc data)
    * props.rejectedAt - stores the index of the step where rejected (if no rejects value is equal to -1)
+   * props.index
    */
 
   //console.log("At TaskDialog :", props); //if this dialog is for current user

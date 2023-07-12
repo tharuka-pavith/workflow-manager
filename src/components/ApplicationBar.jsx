@@ -16,6 +16,7 @@ import { Avatar, Box, Toolbar, Typography, Button, Stack, AppBar } from '@mui/ma
 // Custom componets
 import UserMenu from './userMenu';
 
+
 /**ApplicationBar component */
 function ApplicationBar() {
     //constants
