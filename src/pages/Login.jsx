@@ -16,18 +16,19 @@ import CustomAlert from '../components/Alerts';
 const styles = {
     paperStyles: {
         borderRadius: '10px',
-        width: '100%',
+        width: '60%',
         height: 'auto',
         padding: "5%",
+        mx:'auto',
         // margin: '20% 0 0 25%',
-        backgroundColor: "rgba(255, 255, 255, 0.97)" //set opacity of paper without affecting child components
+        backgroundColor: "rgba(255, 255, 255, 0.95)" //set opacity of paper without affecting child components
     },
     gridStyle: {
         margin: '1rem',
         padding: '0.5rem'
     },
     buttonStyle: {
-        width: '100%',
+        width: '80%',
         mx: 'auto'
     },
 }
@@ -69,7 +70,7 @@ function Login() {
     }
 
     return (
-        <Container maxWidth='lg' disableGutters>
+        <Container maxWidth='sm' disableGutters>
             <Box>
                 <Paper elevation={10} sx={styles.paperStyles}>
                     <Typography variant='h4' textAlign={'center'} fontWeight="medium" sx={{ my: '10px' }}>Login</Typography>
