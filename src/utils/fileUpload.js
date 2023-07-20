@@ -1,10 +1,10 @@
 // Firebase functions
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-function uploadUserProfilePic(uid, file) {
+function uploadFile(path, file) {
 
-    const storage = getStorage();
-    const storageRef = ref(storage, `users/${uid}/ProfilePic`);
+    const storage = getStorage(); //Firebase storage object
+    const storageRef = ref(storage, path); //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
 
     const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -41,10 +41,11 @@ function uploadUserProfilePic(uid, file) {
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 //TODO: Store image URL in databsase
                 console.log('File available at', downloadURL);
+                return downloadURL;
             });
         }
     );
 
 }
 
-export default uploadUserProfilePic;
+export default uploadFile;
