@@ -28,6 +28,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 //Custom components and utils
 import WorkflowSelect from '../components/WorkFlowSelect';
 import insertTask from '../utils/insertTask';
+//import uploadFile from '../utils/fileUpload';
 
 
 const taskTypes = [
@@ -62,6 +63,7 @@ function NewTask_v1() {
     const [taskType, setTaskType] = useState('');
     const [assignees, setAssignees] = useState(''); //select assignees by searching
     const [workflow, setWorkflow] = useState(''); //the final workflow derived from assignees
+    const [selectedFiles, setSelectedFiles] = useState([]); //files selected by user
 
 
     const handleAssigneeChange = (values) => {
@@ -82,7 +84,7 @@ function NewTask_v1() {
         } else {
             console.log(taskName, description, dueDate);
             console.log(workflow);
-            insertTask(taskName, dueDate, description, workflow); //insert task to firestore DB
+            insertTask(taskName, dueDate, description, workflow, selectedFiles); //insert task to firestore DB
             //navigate("/dashboard/mytasks"); //After insert, navigate
         }
 
@@ -92,6 +94,22 @@ function NewTask_v1() {
         setDueDate(date.$d);
         //console.log(dueDate);
     }
+
+    /**Functions to upload file handling */
+    const handleFileInputChange = (event) => {
+        // Get the selected files from the file input
+        const files = event.target.files;
+        //setSelectedFiles(files);
+        setSelectedFiles(Array.from(files));
+    };
+
+    /**Upload file to firebase storage */
+    const handleFileUpload = (path) => {
+        // Perform the file upload logic here with the selectedFiles array
+        // For example, you can use the selectedFiles array to upload the files to your server or cloud storage.
+        // Note: You may need to handle the upload logic using a backend service or a cloud storage SDK.
+        console.log(selectedFiles);
+    };
 
 
     /**Variables and functions for the stepper */
@@ -231,16 +249,24 @@ function NewTask_v1() {
                 </Grid>
                 <Grid item xs={12}>
                     <input
-                        accept="image/*"
-                        id="profile-picture-upload"
+                        id="file-upload"
                         type="file"
-
                         style={{ display: 'none' }}
+                        multiple
+                        onChange={handleFileInputChange}
                     />
                     <Typography variant='subtitle1'>Attachments : </Typography>
-                    <label htmlFor="profile-picture-upload">
-                        <Button variant='outlined' startIcon={<Upload />}>Upload <input hidden accept="image/*" multiple type="file" /></Button>
+                    <label htmlFor="file-upload">
+                        <Button variant='outlined' startIcon={<Upload />} component="span">Select Files </Button>
                     </label>
+                    {/* Display the selected file names */}
+                    {selectedFiles.length > 0 && (
+                        <ul>
+                            {Array.from(selectedFiles).map((file, index) => (
+                                <li key={index}>{file.name}</li>
+                            ))}
+                        </ul>
+                    )}
                 </Grid>
                 {/*Left Side of the form */}
                 {/* <Grid item xs={5}> 
@@ -385,11 +411,11 @@ function NewTask_v1() {
                     <Grid item xs={6}>
                         <TextField fullWidth label="Due Date" value={dueDate} InputProps={{ readOnly: true, }} />
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={12}>
                         <TextField fullWidth label="Description" value={description} InputProps={{ readOnly: true, }} />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField label="Attachments" value="Todo" InputProps={{ readOnly: true, }} />
+                        <TextField fullWidth label="Attachments" value={selectedFiles.map((e)=>e.name)} InputProps={{ readOnly: true, }} />
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant='subtitle1'>Your workflow: </Typography>

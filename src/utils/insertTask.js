@@ -3,10 +3,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
 
+import uploadFile from "./fileUpload";
+
 /**
  * This function is used to insert the task, created by the user, to Firestore database
  * */
-export default async function insertTask( taskName, dueDate, description, workflow){
+export default async function insertTask( taskName, dueDate, description, workflow, files){
     const db = getFirestore();
     const auth = getAuth();
 
@@ -36,6 +38,23 @@ export default async function insertTask( taskName, dueDate, description, workfl
             workflow: updatedWorkflow
         });
         console.log("Document written with ID: ", docRef.id); //logging
+
+        /**Upload files to firebase storage */
+        const attachmentNames = [];
+        files.forEach(
+            (file) => {
+                //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
+                const fileLink = uploadFile(`tasks/${docRef.id}/${auth.currentUser.uid}/${file.name}`, file);
+                console.log("File Link: ", fileLink);
+                attachmentNames.push(file.name);
+            }
+        );
+
+        /**Now update the attachments field in the task document */
+        const currentDocRef = doc(db, "current_tasks", docRef.id);
+        await updateDoc(currentDocRef, {
+            attachments: attachmentNames //set the attachments field in the doc
+        });
 
         /**insert refernce to the task inside current user's my_tasks field */
         const currentUserRef = doc(db, "users", auth.currentUser.uid);
