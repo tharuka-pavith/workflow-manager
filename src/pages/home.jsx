@@ -8,7 +8,10 @@ import { Outlet } from "react-router-dom";
 
 // Custom components
 import ApplicationBar from '../components/ApplicationBar';
+<<<<<<< HEAD
 import StickyFooter from '../components/StickyFooter';
+=======
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
 
 // Assets
 import backgroundImage from '../assests/imgs/background.jpg';

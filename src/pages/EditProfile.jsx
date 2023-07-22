@@ -73,7 +73,11 @@ function EditProfile() {
         const fetchData = async () => {
             const docRef = doc(db, "users", uid); //get a reference to relevant user document
             const docSnap = await getDoc(docRef); //get a snapshot of the user document
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
             if (docSnap.exists) { //if the snapshot exists: update user data
                 // console.log(docSnap.data());
                 setfName(docSnap.data().fName);

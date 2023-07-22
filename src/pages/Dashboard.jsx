@@ -1,7 +1,11 @@
 import React from "react";
 
 // MUI components
+<<<<<<< HEAD
 import { Box, CssBaseline } from '@mui/material';
+=======
+import { Grid } from '@mui/material';
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
 
 // React router outlet
 import { Outlet } from "react-router-dom"
@@ -14,6 +18,7 @@ import AppDrawer from '../components/AppDrawer';
 /** Dashboard component */
 function Dashboard() {
     return (
+<<<<<<< HEAD
         <Box>
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
@@ -24,6 +29,19 @@ function Dashboard() {
                 </Box>
             </Box>
         </Box>
+=======
+        <Grid container spacing={0}>
+            <Grid item xs={12}>
+            <ApplicationBar />
+            </Grid>
+
+            <Grid item xs={12}>
+            <AppDrawer />
+            <Outlet />
+            </Grid>
+
+        </Grid>
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
     );
 }
 

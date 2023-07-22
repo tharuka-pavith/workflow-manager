@@ -18,15 +18,20 @@ export default function TaskDialog(props) {
    * props.handleClose
    * props.open
    * props.docID
+<<<<<<< HEAD
    * props.index - store the workflow array index of clicked step
    * props.activeStep - holds the index of ongong step (with the help of "completed" field in doc data)
    * props.rejectedAt - stores the index of the step where rejected (if no rejects value is equal to -1)
+=======
+   * props.index
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
    */
 
   //console.log("At TaskDialog :", props); //if this dialog is for current user
 
   if (props.isCurrentUser) {
     //if the dialog is for current user
+<<<<<<< HEAD
     //return RenderSpecificDialog(props);
     if(props.index != props.activeStep){
       return RenderNormalDialog(props); //current user can't edit
@@ -41,6 +46,9 @@ export default function TaskDialog(props) {
       }
       // return RenderSpecificDialog(props);
     }
+=======
+    return RenderSpecificDialog(props);
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
   } else {
     //if dialog is not for current user
     return RenderNormalDialog(props);
@@ -120,7 +128,11 @@ function RenderNormalDialog(props) {
         maxWidth="sm"
       >
         <DialogTitle id="alert-dialog-title">
+<<<<<<< HEAD
           Assigned to: {props.step.fullName}
+=======
+          Assignee: {props.step.fullName}
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -132,7 +144,11 @@ function RenderNormalDialog(props) {
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Attachments:</Typography></td>
+<<<<<<< HEAD
                   {/*TODO: <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td> */}
+=======
+                  <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td>
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Reveiewd on:</Typography></td>
@@ -224,7 +240,11 @@ function RenderSpecificDialog(props) {
     //store updated data in Json object
     const updatedData = {
       approved: approved,
+<<<<<<< HEAD
       completed: true,
+=======
+      completed: completed,
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
       comments: comment,
       timestamp: timestamp,
       attachments: attachements
@@ -248,7 +268,11 @@ function RenderSpecificDialog(props) {
 
       >
         <DialogTitle id="alert-dialog-title">
+<<<<<<< HEAD
           Assigned to: {props.step.fullName}
+=======
+          Assignee: {props.step.fullName}
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
         </DialogTitle>
         <DialogContent>
           <Box sx={{ my: "5%" }}>
@@ -276,8 +300,11 @@ function RenderSpecificDialog(props) {
         <DialogActions>
           <Button onClick={props.handleClose} variant="text" color='error'>Close</Button>
           <Button onClick={() => { 
+<<<<<<< HEAD
             // if(completed){alert("You cannot edit after completing!")}
             // else{handleSave();}
+=======
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
             handleSave();
             props.handleClose();
            }} autoFocus variant="outlined"

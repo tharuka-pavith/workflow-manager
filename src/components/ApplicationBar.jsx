@@ -14,7 +14,11 @@ import { doc, getDoc, getFirestore } from "firebase/firestore";
 import { Avatar, Box, Toolbar, Typography, Button, Stack, AppBar } from '@mui/material';
 
 // Custom componets
+<<<<<<< HEAD
 import UserMenu from './userMenu';
+=======
+import UserMenu from './userMenu'; 
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
 
 /**ApplicationBar component */
 function ApplicationBar() {

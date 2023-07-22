@@ -1,7 +1,11 @@
 import React from "react";
 
 // MUI components
+<<<<<<< HEAD
 import { Drawer, Toolbar, ListItem, ListItemButton, ListItemIcon, ListItemText, Box, List } from "@mui/material";
+=======
+import { Tooltip, Drawer, Toolbar, ListItem, ListItemButton, ListItemIcon, ListItemText, Box } from "@mui/material";
+>>>>>>> 43422b8868ed13d2e0609c51d7610fb6feaf1a9e
 import { useNavigate } from "react-router-dom"
 
 // MUI icons
