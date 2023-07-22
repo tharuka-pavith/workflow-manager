@@ -238,7 +238,8 @@ function NewTask_v1() {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         {/**value prop gives an error */}
                         {/* <DatePicker value={dueDate} label='Due Date' onChange={handleDateChange} /> */}
-                        <DatePicker label='Due Date' onChange={handleDateChange} />
+                        {/*Disable selecting past dates by adding disablePast component */}
+                        <DatePicker disablePast label='Due Date' onChange={handleDateChange} />
 
                     </LocalizationProvider>
                 </Grid>
