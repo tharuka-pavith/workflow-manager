@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assests/imgs/background.jpg';
 
 //Firebase functions
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
 
 import { useState } from 'react';
 
@@ -65,7 +65,15 @@ export default function SignInSide() {
 
     /**Handle th sign in function */
     function handleSignIn() {
-        signInWithEmailAndPassword(auth, email, password)
+      setPersistence(auth, browserSessionPersistence)
+  .then(() => {
+    // Existing and future Auth states are now persisted in the current
+    // session only. Closing the window would clear any existing state even
+    // if a user forgets to sign out.
+    // ...
+    // New sign-in will be persisted with session persistence.
+    //return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
@@ -79,6 +87,13 @@ export default function SignInSide() {
 
                 setAlert({message:errorCode, severity:"error", open:true});
             });
+  })
+  .catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
+        
     }
 
   // const handleSubmit = (event) => {
