@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 // MUI components
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
-import { Typography, TextField, Box, Button } from '@mui/material';
+import { Typography, TextField, Box, Button, Grid } from '@mui/material';
 
 import { Upload } from '@mui/icons-material';
 
@@ -45,12 +45,13 @@ export default function TaskDialog(props) {
         return RenderNormalDialog(props);
       }
       else {
-        if (props.step.completed) {
-          return RenderNormalDialog(props);
-        }
-        else {
-          return RenderSpecificDialog(props); //current user can edit
-        }
+        // if (props.step.completed) {
+        //   return RenderNormalDialog(props);
+        // }
+        // else {
+        //   return RenderSpecificDialog(props); //current user can edit
+        // }
+        return RenderSpecificDialog(props);
 
       }
       // return RenderSpecificDialog(props);
@@ -119,7 +120,7 @@ export default function TaskDialog(props) {
 function RenderNormalDialog(props) {
   const storage = getStorage();
 
-  const approved = props.step.approved ? "Approved" : "Not Approved";
+  const status = props.step.approved ? "Approved" : (props.step.completed ? "Rejected" : "Pending");
   const [attachments, setAttachments] = useState([]);
   console.log('Attachments 1st:', props.step.attachments);
   //attachment file can be accessed through props.step
@@ -179,11 +180,11 @@ function RenderNormalDialog(props) {
         maxWidth="sm"
       >
         <DialogTitle id="alert-dialog-title">
-          Assigned to: {props.step.fullName}
+          {props.step.fullName}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <table>
+          <DialogContentText id="alert-dialog-description" sx={{ py: '1%' }}>
+            {/* <table>
               <tbody>
                 <tr>
                   <td><Typography variant='subtitle1' >Comments:</Typography></td>
@@ -209,7 +210,34 @@ function RenderNormalDialog(props) {
                   <td><Typography variant='subtitle1' >{approved}</Typography></td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField value={status} label='Status' variant='filled'
+                  color={(status === "Approved" ? "success" : (status === "Rejected" ? "error" : "warning"))}
+                  focused InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField fullWidth value={props.step.comments} label='Comments' variant='filled' InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField fullWidth value={props.step.timestamp} label='Review Date' variant='filled' InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant='subtitle1' >Attachments:</Typography>
+                <Typography variant='subtitle1' >
+                  {attachments.map(
+                    (file) => {
+                      return (<Link href={file.link} target='_blank' rel="noopener" underline='hover' sx={{ mx: '1%' }}>
+                        {file.name}</Link>);
+                    }
+                  )}
+                </Typography>
+              </Grid>
+            </Grid>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
