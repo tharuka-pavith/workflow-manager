@@ -21,6 +21,7 @@ import { getStorage, ref, getDownloadURL } from "firebase/storage"; //for storag
 
 // Custom components
 import TaskDialog from '../components/TaskDialog';
+import TaskDialog_V1 from '../components/TaskDialog_V1';
 
 //const steps = ['Initiated by You', 'Dr. Nimal', 'Mr. Perera', 'Ms. Kaamala', 'Dept. Head DEIE', 'Assistant Registrar', 'ViceChancellor'];
 
@@ -212,7 +213,7 @@ useEffect(() => {
 
         <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
 
-        <TaskDialog open={dialogOpen} handleClose={handleClose}
+        <TaskDialog_V1 open={dialogOpen} handleClose={handleClose}
           step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} activeStep={activeStep} rejectedAt={rejectedAt} />
 
         <Box sx={{ width: '100%', mt: '70px' }}>
