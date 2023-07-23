@@ -36,22 +36,22 @@ export default function TaskDialog(props) {
   if (props.isCurrentUser) {
     //if the dialog is for current user
     //return RenderSpecificDialog(props);
-    if(props.index != props.activeStep){
+    if (props.index !== props.activeStep) {
       return RenderNormalDialog(props); //current user can't edit
-    }else{
-      if((props.rejectedAt != -1) && (props.index > props.rejectedAt)){
+    } else {
+      if ((props.rejectedAt !== -1) && (props.index > props.rejectedAt)) {
         //There are previously rejected steps & current user step is after rejection
         //Current user should not be able to edit his step
         return RenderNormalDialog(props);
       }
-      else{
-        if(props.step.completed){
+      else {
+        if (props.step.completed) {
           return RenderNormalDialog(props);
         }
-        else{
+        else {
           return RenderSpecificDialog(props); //current user can edit
         }
-        
+
       }
       // return RenderSpecificDialog(props);
     }
@@ -117,8 +117,53 @@ export default function TaskDialog(props) {
  * @returns A dialog component with specific details
  */
 function RenderNormalDialog(props) {
+  const storage = getStorage();
 
   const approved = props.step.approved ? "Approved" : "Not Approved";
+  const [attachments, setAttachments] = useState([]);
+  console.log('Attachments 1st:', props.step.attachments);
+  //attachment file can be accessed through props.step
+  //attachment file can be accessed through props.step
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      //console.log('Attachments 2nd:', props.step.attachments);
+      //console.log('Step :', props.step);
+      //console.log('DocID :', props.docID);
+      //get file details and store in attachments
+      const tempArr = props.step.attachments;
+      const filesArr = [];
+
+      // Create an array of promises using getDownloadURL for each file
+      if (tempArr !== undefined) {
+        const downloadURLPromises = tempArr.map((file) => {
+          const fileRef = ref(storage, `tasks/${props.docID}/${props.step.user_id}/${file}`);
+          return getDownloadURL(fileRef);
+        });
+
+
+        try {
+          const downloadURLs = await Promise.all(downloadURLPromises);
+          // Map the tempArr and downloadURLs arrays to create the filesArr
+          tempArr.forEach((file, index) => {
+            const url = downloadURLs[index];
+            //console.log('url ', url);
+            filesArr.push({ name: file, link: url });
+          });
+
+          setAttachments(filesArr);
+          //console.log("filesArr", filesArr);
+        } catch (error) {
+          console.error("Error fetching download URLs", error);
+          // Handle the error if needed
+        }
+      } else {
+        console.log("tempArr is null");
+      }
+    }
+    fetchData();
+  }, [props.docID, props.step]);
 
   return (
     <div>
@@ -146,11 +191,18 @@ function RenderNormalDialog(props) {
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Attachments:</Typography></td>
-                  {/*TODO: <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td> */}
+                  <td><Typography variant='subtitle1' >
+                    {attachments.map(
+                      (file) => {
+                        return (<Link href={file.link} target='_blank' rel="noopener" underline='hover' sx={{ mx: '1%' }}>
+                          {file.name}</Link>);
+                      }
+                    )}
+                  </Typography></td>
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Reviewed on:</Typography></td>
-                  <td><Typography variant='subtitle1' >{props.step.approved_date}</Typography></td>
+                  <td><Typography variant='subtitle1' >{props.step.timestamp}</Typography></td>
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Status:</Typography></td>

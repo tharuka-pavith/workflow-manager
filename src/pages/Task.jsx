@@ -134,10 +134,12 @@ function Task(props) {
     fetchData();
   }, [docID]);
 */
-  useEffect(() => {
+
+useEffect(() => {
     const fetchData = async () => {
       const docRef = doc(db, "current_tasks", docID);
       const docSnap = await getDoc(docRef);
+
       //console.log("doc data", docSnap.data());
       setDocData(docSnap.data());
       setWorkflow(docSnap.data().workflow);
@@ -176,9 +178,9 @@ function Task(props) {
 
 
   useEffect(() => {
-    console.log(docData);
+    //console.log(docData);
     setWorkflow(docData.workflow);
-    console.log("workflow: ", workflow);
+    //console.log("workflow: ", workflow);
 
     var i = 0; //to store current step index
     var foundActiveStep = false; //store whether active step found or not
