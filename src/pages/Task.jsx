@@ -76,10 +76,10 @@ function Task(props) {
       setIsCurrentUser(false);
     }
     handleClickOpen();
-    console.log("step: ", step);
+    //console.log("step: ", step);
 
-    console.log(userID);
-    console.log('isCurrentUser ', isCurrentUser);
+    //console.log(userID);
+    //console.log('isCurrentUser ', isCurrentUser);
   };
   /******************* */
 
@@ -138,7 +138,7 @@ function Task(props) {
     const fetchData = async () => {
       const docRef = doc(db, "current_tasks", docID);
       const docSnap = await getDoc(docRef);
-      console.log("doc data", docSnap.data());
+      //console.log("doc data", docSnap.data());
       setDocData(docSnap.data());
       setWorkflow(docSnap.data().workflow);
 
@@ -148,7 +148,7 @@ function Task(props) {
 
       // Create an array of promises using getDownloadURL for each file
       const downloadURLPromises = tempArr.map((file) => {
-        const fileRef = ref(storage, `tasks/${docID}/${userID}/${file}`);
+        const fileRef = ref(storage, `tasks/${docID}/${docSnap.data().owner_id}/${file}`);
         return getDownloadURL(fileRef);
       });
 
@@ -163,7 +163,7 @@ function Task(props) {
         });
 
         setAttachments(filesArr);
-        console.log("Attachments", filesArr);
+        //console.log("Attachments", filesArr);
       } catch (error) {
         console.error("Error fetching download URLs", error);
         // Handle the error if needed
@@ -171,14 +171,14 @@ function Task(props) {
     };
 
     fetchData();
-  }, [docID, userID]);
+  }, [docID, userID]); 
 
 
 
   useEffect(() => {
     console.log(docData);
     setWorkflow(docData.workflow);
-    console.log(workflow);
+    console.log("workflow: ", workflow);
 
     var i = 0; //to store current step index
     var foundActiveStep = false; //store whether active step found or not
@@ -193,7 +193,7 @@ function Task(props) {
       }
       i++;
     });
-    console.log(steps);
+    //console.log(steps);
   }, [docData]);
 
 
