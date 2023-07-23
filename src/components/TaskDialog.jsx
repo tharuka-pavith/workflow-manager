@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // Reac hooks
 import { useState } from 'react';
 
 // MUI components
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
-import { Typography, TextField, Box,Button } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
+import { Typography, TextField, Box, Button } from '@mui/material';
+
+import { Upload } from '@mui/icons-material';
 
 //Firestore functions
 import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage"; //for storage functionality
+
+
+import uploadFile from '../utils/fileUpload';
+
 
 /**TaskDialog component */
 export default function TaskDialog(props) {
   /**
-   * props.steps
+   * props.step
    * props.isCurrentUser
    * props.handleClose
    * props.open
@@ -38,7 +45,13 @@ export default function TaskDialog(props) {
         return RenderNormalDialog(props);
       }
       else{
-        return RenderSpecificDialog(props); //current user can edit
+        if(props.step.completed){
+          return RenderNormalDialog(props);
+        }
+        else{
+          return RenderSpecificDialog(props); //current user can edit
+        }
+        
       }
       // return RenderSpecificDialog(props);
     }
@@ -136,7 +149,7 @@ function RenderNormalDialog(props) {
                   {/*TODO: <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td> */}
                 </tr>
                 <tr>
-                  <td><Typography variant='subtitle1' >Reveiewd on:</Typography></td>
+                  <td><Typography variant='subtitle1' >Reviewed on:</Typography></td>
                   <td><Typography variant='subtitle1' >{props.step.approved_date}</Typography></td>
                 </tr>
                 <tr>
@@ -166,11 +179,20 @@ function RenderSpecificDialog(props) {
   const db = getFirestore();
 
   const [comment, setComment] = useState('');
-  const [approved, setApproved] = useState(false);
+  const [approved, setApproved] = useState(true);
   const [completed, setCompleted] = useState(false);
   // const [approvedDate, setApprovedDate] = useState('');
   const [attachements, setAttachments] = useState([]);
   const [timestamp, setTimestamp] = useState(Date());
+  const [selectedFiles, setSelectedFiles] = useState([]); //State to store files
+
+  /**Functions for file handling */
+  const handleFileInputChange = (event) => {
+    // Get the selected files from the file input
+    const files = event.target.files;
+    //setSelectedFiles(files);
+    setSelectedFiles(Array.from(files));
+  };
 
   const updateWorkflowElement = async (docID, workflowIndex, updatedData) => {
     try {
@@ -188,7 +210,7 @@ function RenderSpecificDialog(props) {
         //   ...updatedData
         // };
         workflow[workflowIndex] = {
-          user_id : props.step.user_id,
+          user_id: props.step.user_id,
           fullName: props.step.fullName,
           ...updatedData
         };
@@ -202,7 +224,7 @@ function RenderSpecificDialog(props) {
 
         console.log('Workflow element updated successfully!');
       }
-      else{
+      else {
         console.log("Document doesn't exist!");
       }
 
@@ -219,9 +241,20 @@ function RenderSpecificDialog(props) {
     setTimestamp(Date()); //get current timestamp
     setCompleted(true); //mark this step as completed
 
+    /**Upload files to firebase storage */
+    const attachmentNames = [];
+    selectedFiles.forEach(
+      (file) => {
+        //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
+        const fileLink = uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file);
+        console.log("File Link: ", fileLink);
+        attachmentNames.push(file.name);
+      }
+    );
+
     //Todo: Complete setAttachments function
-    setAttachments(['test.pdf']);
-    
+    setAttachments(attachmentNames);
+
     //store updated data in Json object
     const updatedData = {
       approved: approved,
@@ -259,15 +292,32 @@ function RenderSpecificDialog(props) {
                 label="Comment" multiline rows={2} placeholder='Add comments' value={comment}
               />
 
+              <input
+                id="file-upload"
+                type="file"
+                style={{ display: 'none' }}
+                multiple
+                onChange={handleFileInputChange}
+              />
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Attachments:</Typography>
-              <Button variant="outlined" sx={{ mx: '1%' }}>Add</Button>
+              {selectedFiles.length > 0 && (
+                <ul>
+                  {Array.from(selectedFiles).map((file, index) => (
+                    <li key={index}>{file.name}</li>
+                  ))}
+                </ul>
+              )}
+              <label htmlFor="file-upload">
+                <Button variant='outlined' startIcon={<Upload />} component="span">Select Files </Button>
+              </label>
 
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Status: {approved ? "Approve" : "Reject"}</Typography>
-              <Button variant="contained" sx={{ mx: '1%' }}
-
-                onClick={() => { setApproved(true) }}>Approve</Button>
-              <Button variant="contained" color='error' sx={{ mx: '1%' }}
-                onClick={() => { setApproved(false) }}>Reject</Button>
+              <Button sx={{ mx: '1%' }}
+                onClick={() => { setApproved(true) }}
+                variant={approved ? "contained" : "outlined"}>Approve</Button>
+              <Button color='error' sx={{ mx: '1%' }}
+                onClick={() => { setApproved(false) }}
+                variant={!approved ? "contained" : "outlined"}>Reject</Button>
 
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Date:{timestamp}</Typography>
 
@@ -276,13 +326,13 @@ function RenderSpecificDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleClose} variant="text" color='error'>Close</Button>
-          <Button onClick={() => { 
+          <Button onClick={() => {
             // if(completed){alert("You cannot edit after completing!")}
             // else{handleSave();}
             handleSave();
             props.handleClose();
-           }} autoFocus variant="outlined"
-          > Save </Button>
+          }} autoFocus variant="outlined"
+          > Submit </Button>
         </DialogActions>
       </Dialog>
     </div>
