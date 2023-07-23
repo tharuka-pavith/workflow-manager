@@ -50,7 +50,7 @@ const taskTypes = [
     },
 ];
 
-const steps = ['Enter task Details', 'Set the workflow', 'Confirm and submit']; //Steps for the stepper
+const steps = ['Enter task details', 'Set the workflow', 'Confirm and submit']; //Steps for the stepper
 
 /**NewTask component */
 function NewTask_v1() {
@@ -244,7 +244,7 @@ function NewTask_v1() {
                     </LocalizationProvider>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField multiline rows={2} maxRows={2} variant='outlined' label='Description'
+                    <TextField fullWidth multiline rows={2} maxRows={2} variant='outlined' label='Description'
                         sx={{ width: '70%' }} helperText="Add some description" value={description}
                         onChange={(e) => { setDescription(e.target.value) }} />
                 </Grid>
@@ -405,18 +405,18 @@ function NewTask_v1() {
             <Box sx={{ mx: 'auto', my: '20px' }}>
                 <Typography variant='h6' textAlign={'center'}>Summary of the Task</Typography>
 
-                <Grid container spacing={4} sx={{ my: '1%' }} >
+                <Grid container spacing={3} sx={{ my: '1%' }} >
                     <Grid item xs={6}>
-                        <TextField fullWidth label="Task Name" value={taskName} InputProps={{ readOnly: true, }} />
+                        <TextField fullWidth label="Task Name" value={taskName} InputProps={{ readOnly: true, }} variant="filled" />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField fullWidth label="Due Date" value={dueDate} InputProps={{ readOnly: true, }} />
+                        <TextField fullWidth label="Due Date" value={dueDate} InputProps={{ readOnly: true, }} variant="filled" />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField fullWidth label="Description" value={description} InputProps={{ readOnly: true, }} />
+                        <TextField fullWidth label="Description" value={description} InputProps={{ readOnly: true, }} variant="filled" />
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField fullWidth label="Attachments" value={selectedFiles.map((e)=>e.name)} InputProps={{ readOnly: true, }} />
+                        <TextField fullWidth label="Attachments" value={selectedFiles.map((e)=>e.name)} InputProps={{ readOnly: true, }} variant="filled" />
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant='subtitle1'>Your workflow: </Typography>

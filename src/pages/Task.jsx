@@ -265,18 +265,18 @@ useEffect(() => {
             )}</Typography>
           <Typography variant='h6' textAlign={'left'} fontWeight="medium" sx={{ my: '1%' }} >Details:</Typography>
           <Box sx={{ mx: 'auto',my: '15px'  }}>
-                <Grid container spacing={4} sx={{ my: '1%' }} >
+                <Grid container spacing={4} >
                     <Grid item xs={3}>
-                        <TextField fullWidth  value={"Owner: " + docData.owner_name} readOnly InputProps={{ readOnly: true, }} variant='standard' />
+                        <TextField fullWidth  value={docData.owner_name} label="Initiated by" InputProps={{ readOnly: true, }} InputLabelProps={{ shrink: true }} variant='filled' />
                     </Grid>
                     <Grid item xs={3}>
-                        <TextField fullWidth  value={"Initialized Date: " + docData.initialized_date} InputProps={{ readOnly: true, }} variant='standard' />
+                        <TextField fullWidth  value={docData.initialized_date} label="Initialized date" InputProps={{ readOnly: true, }} InputLabelProps={{ shrink: true }} variant='filled' />
                     </Grid>
                     <Grid item xs={3}>
-                        <TextField fullWidth  value={"Due Date: " + docData.due_date} InputProps={{ readOnly: true, }} variant='standard' />
+                        <TextField fullWidth  value={docData.due_date} label="Due date" InputProps={{ readOnly: true, }} InputLabelProps={{ shrink: true }} variant='filled'/>
                     </Grid>
                     <Grid item xs={6}>
-                        <TextField fullWidth  value={docData.description} InputProps={{ readOnly: true, }} variant='standard' />
+                        <TextField fullWidth  value={docData.description} label="Description"  InputProps={{ readOnly: true, }} InputLabelProps={{ shrink: true }} variant='filled' />
                     </Grid>
                 </Grid>
             </Box>
