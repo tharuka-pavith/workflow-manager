@@ -19,20 +19,21 @@ export default function TaskDialog_V1(props) {
 
   const fetchData = async () => {
     //get file details and store in attachments
-    const tempArr = props.step.attachments;
+    //console.log('props.step.attachments', props.step);
+    const attachmentsTempArr = props.step.attachments;
     const filesArr = [];
-    console.log('tempArr ', props.step);
+    //console.log('attachmentsTempArr ', props.step);
     // Create an array of promises using getDownloadURL for each file
-    if (tempArr !== undefined) {
-      const downloadURLPromises = tempArr.map((file) => {
+    if (attachmentsTempArr !== undefined) {
+      const downloadURLPromises = attachmentsTempArr.map((file) => {
         const fileRef = ref(storage, `tasks/${props.docID}/${props.step.user_id}/${file}`);
         return getDownloadURL(fileRef);
       });
 
       try {
         const downloadURLs = await Promise.all(downloadURLPromises);
-        // Map the tempArr and downloadURLs arrays to create the filesArr
-        tempArr.forEach((file, index) => {
+        // Map the attachmentsTempArr and downloadURLs arrays to create the filesArr
+        attachmentsTempArr.forEach((file, index) => {
           const url = downloadURLs[index];
           console.log('url ', url);
           filesArr.push({ name: file, link: url });
@@ -45,12 +46,12 @@ export default function TaskDialog_V1(props) {
         // Handle the error if needed
       }
     } else {
-      console.log("tempArr is null");
+      console.log("attachmentsTempArr is null");
     }
   }
   useEffect(() => {
     fetchData();
-  }, [props.isCurrentUser]);
+  }, [props.step]);
 
 
   /**Functions for file handling */
@@ -105,12 +106,13 @@ export default function TaskDialog_V1(props) {
   /**
    * Call this function when user clicks save button
    */
-  function handleSave() {
+  async function handleSave() {
     setTimestamp(Date()); //get current timestamp
     setCompleted(true); //mark this step as completed
 
     /**Upload files to firebase storage */
     const attachmentNames = [];
+    /*
     selectedFiles.forEach(
       (file) => {
         //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
@@ -119,10 +121,29 @@ export default function TaskDialog_V1(props) {
         attachmentNames.push(file.name);
       }
     );
+  */
+    const uploadPromises = selectedFiles.map((file) => {
+      return uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file)
+        .then((fileLink) => {
+          console.log("File Link: ", fileLink);
+          //attachmentNames.push(file.name);
+          //console.log("New attachment",file.name);
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+        });
+    });
+  
+
+    await Promise.all(uploadPromises); //wait until all promises are done
+
+    selectedFiles.forEach(element => {
+      attachmentNames.push(element.name);
+    });
 
     //Todo: Complete setAttachments function
     setAttachments(attachmentNames);
-
+    
     //store updated data in Json object
     const updatedData = {
       approved: approved,
@@ -142,7 +163,7 @@ export default function TaskDialog_V1(props) {
    */
   function RenderNormalDialog(props) {
     const storage = getStorage();
-  
+
     const status = props.step.approved ? "Approved" : (props.step.completed ? "Rejected" : "Pending");
     //const [attachments, setAttachments] = useState([]);
     //console.log('Attachments 1st:', props.step.attachments);
@@ -172,15 +193,15 @@ export default function TaskDialog_V1(props) {
                     color={(status === "Approved" ? "success" : (status === "Rejected" ? "error" : "warning"))}
                     focused InputProps={{ readOnly: true, }} />
                 </Grid>
-  
+
                 <Grid item xs={12}>
                   <TextField fullWidth value={props.step.comments} label='Comments' variant='filled' InputProps={{ readOnly: true, }} />
                 </Grid>
-  
+
                 <Grid item xs={12}>
                   <TextField fullWidth value={props.step.timestamp} label='Review Date' variant='filled' InputProps={{ readOnly: true, }} />
                 </Grid>
-  
+
                 <Grid item xs={12}>
                   <Typography variant='subtitle1' >Attachments:</Typography>
                   <Typography variant='subtitle1' >
@@ -210,7 +231,7 @@ export default function TaskDialog_V1(props) {
    * User specific dialog component.
    * Use this if the current user is the assigned user in the step.
    */
-  function RenderSpecificDialog(props) {  
+  function RenderSpecificDialog(props) {
     return (
       <div>
         {/* <Button variant="outlined" onClick={handleClickOpen}>
@@ -223,7 +244,7 @@ export default function TaskDialog_V1(props) {
           aria-describedby="alert-dialog-description"
           fullWidth="false"
           maxWidth="sm"
-  
+
         >
           <DialogTitle id="alert-dialog-title">
             Assigned to: {props.step.fullName}
@@ -231,11 +252,11 @@ export default function TaskDialog_V1(props) {
           <DialogContent>
             <Box sx={{ my: "5%" }}>
               <DialogContentText id="alert-dialog-description">
-  
+
                 <TextField id="outlined-multiline-static" fullWidth onChange={(e) => setComment(e.target.value)}
                   label="Comment" multiline rows={2} placeholder='Add comments' value={comment}
                 />
-  
+
                 <input
                   id="file-upload"
                   type="file"
@@ -254,7 +275,7 @@ export default function TaskDialog_V1(props) {
                 <label htmlFor="file-upload">
                   <Button variant='outlined' startIcon={<Upload />} component="span">Select Files </Button>
                 </label>
-  
+
                 <Typography variant='subtitle1' sx={{ my: '1%' }}>Status: {approved ? "Approve" : "Reject"}</Typography>
                 <Button sx={{ mx: '1%' }}
                   onClick={() => { setApproved(true) }}
@@ -262,9 +283,9 @@ export default function TaskDialog_V1(props) {
                 <Button color='error' sx={{ mx: '1%' }}
                   onClick={() => { setApproved(false) }}
                   variant={!approved ? "contained" : "outlined"}>Reject</Button>
-  
+
                 <Typography variant='subtitle1' sx={{ my: '1%' }}>Date:{timestamp}</Typography>
-  
+
               </DialogContentText>
             </Box>
           </DialogContent>
