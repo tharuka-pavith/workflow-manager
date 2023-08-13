@@ -2,11 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
 import { Typography, TextField, Box, Button, Grid } from '@mui/material';
 import { Upload } from '@mui/icons-material';
-import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, updateDoc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import uploadFile from '../utils/fileUpload';
 
 export default function TaskDialog_V1(props) {
+  /**
+  * props.step
+  * props.isCurrentUser
+  * props.handleClose
+  * props.open
+  * props.docID
+  * props.index - store the workflow array index of clicked step
+  * props.activeStep - holds the index of ongong step (with the help of "completed" field in doc data)
+  * props.rejectedAt - stores the index of the step where rejected (if no rejects value is equal to -1)
+  * props.workflow -  the workflow
+  * owner - task owner
+  */
+
   const db = getFirestore();
   const storage = getStorage();
 
@@ -19,7 +32,7 @@ export default function TaskDialog_V1(props) {
 
   const fetchData = async () => {
     //get file details and store in attachments
-    //console.log('props.step.attachments', props.step);
+    //console.log('length', props.workflow.length);
     const attachmentsTempArr = props.step.attachments;
     const filesArr = [];
     //console.log('attachmentsTempArr ', props.step);
@@ -35,12 +48,12 @@ export default function TaskDialog_V1(props) {
         // Map the attachmentsTempArr and downloadURLs arrays to create the filesArr
         attachmentsTempArr.forEach((file, index) => {
           const url = downloadURLs[index];
-          console.log('url ', url);
+          //console.log('url ', url);
           filesArr.push({ name: file, link: url });
         });
 
         setAttachments(filesArr);
-        console.log("filesArr", filesArr);
+        //console.log("filesArr", filesArr);
       } catch (error) {
         console.error("Error fetching download URLs", error);
         // Handle the error if needed
@@ -87,11 +100,16 @@ export default function TaskDialog_V1(props) {
         console.log('updated workflow: ', workflow);
 
         // Update the task document with the modified workflow array
-        await updateDoc(taskDocRef, {
+        const updateDocPromise = await updateDoc(taskDocRef, {
           workflow: workflow,
         });
 
         console.log('Workflow element updated successfully!');
+
+        //if this is the final step
+        if ((props.workflow.length - 1 === props.index) && approved) {
+          moveTaskToCompletedTasks_v2(docID);
+        }
       }
       else {
         console.log("Document doesn't exist!");
@@ -102,6 +120,64 @@ export default function TaskDialog_V1(props) {
       console.error('Error updating workflow element:', error);
     }
   };
+
+  async function moveTaskToCompletedTasks_v2(docID) {
+    try {
+      // Get the current task
+      const currentTaskDocRef = doc(db, "current_tasks", docID);
+      const currentTaskDocSnap = await getDoc(currentTaskDocRef);
+
+      if (currentTaskDocSnap.exists()) {
+        // Copy the current task to completed_tasks
+        const data = currentTaskDocSnap.data();
+        await setDoc(doc(db, "completed_tasks", docID), data);
+
+        // Delete current task from current_tasks
+        await deleteDoc(doc(db, "current_tasks", docID));
+
+        console.log("Task moved to completed_tasks successfully!");
+
+        //remove the task from each assigned users
+        const workflow = data.workflow;
+        workflow.forEach(async (element) => {
+          const uid = element.user_id;
+          const userRef = doc(db, "users", uid);
+          const userDocSnap = await getDoc(userRef);
+          const assigned_tasks = userDocSnap.data().assigned_tasks;
+
+          //remove the doc
+          const index = assigned_tasks.indexOf(docID);
+          if (index !== -1) {
+            assigned_tasks.splice(index, 1);
+          }
+
+          await updateDoc(userRef, {
+            assigned_tasks: assigned_tasks,
+          });
+        });
+        console.log("tasks removed from assigned users successfully");
+
+        //remove task from owner
+        const ownerRef = doc(db, "users", props.owner);
+        const ownerDocSnap = await getDoc(ownerRef);
+        const my_tasks = ownerDocSnap.data().my_tasks;
+        //remove the doc
+        const index = my_tasks.indexOf(docID);
+        if (index !== -1) {
+          my_tasks.splice(index, 1);
+        }
+        await updateDoc(ownerRef, {
+          my_tasks: my_tasks,
+        });
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error moving task:", error);
+    }
+  }
+
 
   /**
    * Call this function when user clicks save button
@@ -133,7 +209,7 @@ export default function TaskDialog_V1(props) {
           console.error("Error uploading file:", error);
         });
     });
-  
+
 
     await Promise.all(uploadPromises); //wait until all promises are done
 
@@ -143,7 +219,7 @@ export default function TaskDialog_V1(props) {
 
     //Todo: Complete setAttachments function
     setAttachments(attachmentNames);
-    
+
     //store updated data in Json object
     const updatedData = {
       approved: approved,

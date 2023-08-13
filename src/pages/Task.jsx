@@ -214,7 +214,7 @@ useEffect(() => {
         <Typography variant='h5' textAlign={'left'} fontWeight="medium" sx={{ my: '10px' }}>Task: {docData.task_name}</Typography>
 
         <TaskDialog_V1 open={dialogOpen} handleClose={handleClose}
-          step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} activeStep={activeStep} rejectedAt={rejectedAt} />
+          step={selectedStep} isCurrentUser={isCurrentUser} docID={docID} index={workflowIndex} activeStep={activeStep} rejectedAt={rejectedAt} workflow={workflow} owner={docData.owner_id}/>
 
         <Box sx={{ width: '100%', mt: '70px' }}>
           <Stepper activeStep={activeStep} alternativeLabel>
