@@ -109,6 +109,8 @@ export default function TaskDialog_V1(props) {
         //if this is the final step
         if ((props.workflow.length - 1 === props.index) && approved) {
           moveTaskToCompletedTasks_v2(docID);
+        }else if(!approved){
+          moveTaskToRejectedTasks_v2(docID);
         }
       }
       else {
@@ -121,7 +123,8 @@ export default function TaskDialog_V1(props) {
     }
   };
 
-  async function moveTaskToCompletedTasks_v2(docID) {
+  /**Move the task to completed_tasks collection */
+  async function moveTaskToCompletedTasks_v2(docID) { 
     try {
       // Get the current task
       const currentTaskDocRef = doc(db, "current_tasks", docID);
@@ -136,6 +139,64 @@ export default function TaskDialog_V1(props) {
         await deleteDoc(doc(db, "current_tasks", docID));
 
         console.log("Task moved to completed_tasks successfully!");
+
+        //remove the task from each assigned users
+        const workflow = data.workflow;
+        workflow.forEach(async (element) => {
+          const uid = element.user_id;
+          const userRef = doc(db, "users", uid);
+          const userDocSnap = await getDoc(userRef);
+          const assigned_tasks = userDocSnap.data().assigned_tasks;
+
+          //remove the doc
+          const index = assigned_tasks.indexOf(docID);
+          if (index !== -1) {
+            assigned_tasks.splice(index, 1);
+          }
+
+          await updateDoc(userRef, {
+            assigned_tasks: assigned_tasks,
+          });
+        });
+        console.log("tasks removed from assigned users successfully");
+
+        //remove task from owner
+        const ownerRef = doc(db, "users", props.owner);
+        const ownerDocSnap = await getDoc(ownerRef);
+        const my_tasks = ownerDocSnap.data().my_tasks;
+        //remove the doc
+        const index = my_tasks.indexOf(docID);
+        if (index !== -1) {
+          my_tasks.splice(index, 1);
+        }
+        await updateDoc(ownerRef, {
+          my_tasks: my_tasks,
+        });
+      } else {
+        // docSnap.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    } catch (error) {
+      console.error("Error moving task:", error);
+    }
+  }
+
+  /**Move the task to rejected tasks */
+  async function moveTaskToRejectedTasks_v2(docID) {
+    try {
+      // Get the current task
+      const currentTaskDocRef = doc(db, "current_tasks", docID);
+      const currentTaskDocSnap = await getDoc(currentTaskDocRef);
+
+      if (currentTaskDocSnap.exists()) {
+        // Copy the current task to completed_tasks
+        const data = currentTaskDocSnap.data();
+        await setDoc(doc(db, "rejected_tasks", docID), data);
+
+        // Delete current task from current_tasks
+        await deleteDoc(doc(db, "current_tasks", docID));
+
+        console.log("Task moved to rejected_tasks successfully!");
 
         //remove the task from each assigned users
         const workflow = data.workflow;

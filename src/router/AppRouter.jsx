@@ -24,6 +24,8 @@ import Task from "../pages/Task";
 import Dashboard_v1 from "../pages/Dashboard_v1"; //Updated Dashoard page
 import NewTask_v1 from "../pages/NewTask_v1"; //updated newtask page
 import Task_History from "../pages/Task_History"; //Task page for completed tasks
+import Rejected from "../pages/Rejected"; //rejected tasks
+import Task_Rejected from "../pages/Task_Rejected"; //task page for rejected tasks
 
 
 // Use in case of 404-Not found
@@ -47,7 +49,9 @@ function AppRouter() {
                 <Route path="/dashboard/mytasks" element={<MyTask />} />
                 <Route path="/dashboard/todotasks" element={<TodoTask />} />
                 <Route path="/dashboard/history" element={<History />} />
+                <Route path="/dashboard/rejected" element={<Rejected />} />
                 <Route path="/dashboard/completedtask" element={<Task_History />} />
+                <Route path="/dashboard/rejectedtask" element={<Task_Rejected />} />
                 <Route path="/dashboard/admin" element={<Admin />} />
                 <Route path="/dashboard/editprofile" element={<EditProfile />} />
 
