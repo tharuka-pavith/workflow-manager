@@ -167,6 +167,7 @@ function Task_History(props) {
 
           setAttachments(filesArr);
           //console.log("Attachments", filesArr);
+          setActiveStep(attachments.length-1);
         } catch (error) {
           console.error("Error fetching download URLs", error);
           // Handle the error if needed
