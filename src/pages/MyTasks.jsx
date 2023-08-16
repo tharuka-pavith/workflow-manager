@@ -12,15 +12,15 @@ import { Link, useNavigate } from 'react-router-dom';
 
 //Firebase functions
 import { getAuth } from "firebase/auth";
-import {collection, query, where, getDocs, getFirestore } from "firebase/firestore";
+import {collection, query, where, getDocs, getFirestore , orderBy} from "firebase/firestore";
 
  
 
 // Columns in the table
 const columns = [
+    { id: 'initialized_date', label: 'Initialized Date', minWidth: 100 },
     { id: 'due_date', label: 'Due Date', minWidth: 100 },
-    { id: 'initialized_date', label: 'Initial Date', minWidth: 100 },
-    { id: 'name', label: 'Name', minWidth: 100 },
+    { id: 'name', label: 'Task Name', minWidth: 100 },
     {
         id: 'description',
         label: 'Description',
@@ -31,18 +31,14 @@ const columns = [
         label: 'Attachments',
         minWidth: 170,
     },
-    {
-        id: 'assigned_to',
-        label: 'Assigned',
-        minWidth: 170,
-    },
-    { id: 'docId', label: 'View', minWidth: 100, align: 'center' },
+    //{id: 'assigned_to', label: 'Assigned', minWidth: 170,},
+    //{ id: 'docId', label: 'Task ID', minWidth: 100, align: 'center' },
 ];
 
 /**Organize data that should be included in the table*/
 function createData(due_date,initialized_date, name, description, attachments, assigned_to, docId) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
-    return { due_date,initialized_date, name, description, attachments, assigned_to, docId};
+    return {initialized_date, due_date, name, description, attachments, assigned_to, docId};
 }
 
 /**MyTask component */
@@ -55,7 +51,7 @@ function MyTask(){
 
     useEffect(() => {
         const fetchData = async () => {
-            const q = query(collection(db, "current_tasks"), where("owner_id", "==", auth.currentUser.uid)); //the query 
+            const q = query(collection(db, "current_tasks"), where("owner_id", "==", auth.currentUser.uid),); //the query 
             const querySnapshot = await getDocs(q);
             const tempArr = []; //temp array to store task list
 
@@ -65,7 +61,7 @@ function MyTask(){
                 const data = doc.data();
                 const due_date = data.due_date.toString();
                 const initialized_date = data.initialized_date;
-                const temp = createData(due_date,initialized_date, data.task_name,data.description, "link", data.workflow[0].fullName, doc.id);
+                const temp = createData(due_date,initialized_date, data.task_name,data.description, data.attachments, data.workflow[0].fullName, doc.id);
                 tempArr.push(temp);
                 //console.log(doc.id, " => ", doc.data().workflow[0]);
                 //console.log(data.due_date);

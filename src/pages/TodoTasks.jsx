@@ -17,9 +17,9 @@ import { getFirestore,doc, getDoc } from "firebase/firestore";
 
 
 const columns = [
-    { id: 'due_date', label: 'Date', minWidth: 100 },
-    { id: 'initialized_date', label: 'Initial Date', minWidth: 100 },
-    { id: 'name', label: 'Name', minWidth: 100 },
+    { id: 'initialized_date', label: 'Initialized Date', minWidth: 100 },
+    { id: 'due_date', label: 'Due Date', minWidth: 100 },
+    { id: 'name', label: 'Task Name', minWidth: 100 },
     {
         id: 'description',
         label: 'Description',
@@ -30,19 +30,15 @@ const columns = [
         label: 'Attachments',
         minWidth: 170,
     },
-    {
-        id: 'assigned_to',
-        label: 'Assigned',
-        minWidth: 170,
-    },
-    { id: 'docId', label: 'View', minWidth: 100, align: 'center' },
+    //{id: 'assigned_to', label: 'Assigned', minWidth: 170,},
+    //{ id: 'docId', label: 'Task ID', minWidth: 100, align: 'center' },
 ];
 
 
 /**Organize data that should be included in the table*/
 function createData(due_date,initialized_date, name, description, attachments, assigned_to, docId) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
-    return { due_date,initialized_date, name, description, attachments, assigned_to, docId};
+    return { initialized_date,due_date, name, description, attachments, assigned_to, docId};
 }
 
 /**TodoTask component */
@@ -107,7 +103,7 @@ function TodoTask(){
                 data.initialized_date,
                 data.task_name,
                 data.description,
-                "link",
+                data.attachments,
                 data.workflow[0].fullName,
                 id
               );
