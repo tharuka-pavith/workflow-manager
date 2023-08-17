@@ -31,15 +31,16 @@ const styles = {
 function Welcome() {
     const navigate = useNavigate();
     return (
-        <Container maxWidth='lg' disableGutters >
+        <Container maxWidth='xlg' disableGutters >
             <Box>
                 <Paper elevation={10} sx={styles.paperStyles}>
-                    <Typography variant='h2' fontWeight={'medium'} fontFamily={'sans-serif'} gutterBottom>WorkFlow</Typography>
-                    <Typography variant='h4' fontFamily={'sans-serif'} gutterBottom>Streamline Your Projects and Tasks with Ease!</Typography>
+                    <Typography variant='h2' fontWeight={'xlarge'} fontFamily={'sans-serif'} gutterBottom>WorkFlow Management System</Typography>
+                    <Typography variant='h4' fontFamily={'sans-serif'} gutterBottom>Transform the way you work and unlock new levels of efficiency and collaboration.
+
+</Typography>
                     <Typography variant='body1' fontSize='1.2rem' fontFamily={'sans-serif'} paragraph gutterBottom>
-                        WorkFlow is a Workflow Management System that empowers the university staff to work smarter and faster. 
-                        With WorkFlow, you can create and manage your own workflows for any project or task.  
-                        WorkFlow is the smart and simple way to organize your university workflows.
+                    Our University Workflow Management System is designed to revolutionize the way tasks and processes are managed at our institution.
+                    By automating and optimizing workflows, we empower administrators, faculty members, staff, and students to work smarter, not harder.
                     </Typography>
 
                     <Button size='large' variant='contained' color='success' sx={{marginRight:'2%'}} 
