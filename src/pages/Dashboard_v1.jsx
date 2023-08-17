@@ -28,6 +28,7 @@ import CreateIcon from '@mui/icons-material/Create';
 import TaskIcon from '@mui/icons-material/Task';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import HistoryIcon from '@mui/icons-material/History';
+import WarningIcon from '@mui/icons-material/Warning';
 
 // React hooks
 import { useState, useEffect } from 'react';
@@ -119,8 +120,9 @@ const defaultTheme = createTheme();
 const drawerData = [
     { text: "New Task", path: "/dashboard/newtask", icon: <CreateIcon /> },
     { text: "My Tasks", path: "/dashboard/mytasks", icon: <TaskIcon /> },
-    { text: "Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon /> },
-    { text: "History", path: "/dashboard/history", icon: <HistoryIcon /> },
+    { text: "Assigned Tasks", path: "/dashboard/todotasks", icon: <AssignmentTurnedInIcon /> },
+    { text: "Tasks History", path: "/dashboard/history", icon: <HistoryIcon /> },
+    { text: "Rejected Tasks", path: "/dashboard/rejected", icon: <WarningIcon /> },
     // { text: "Admin", path: "/dashboard/admin", icon: <AdminPanelSettingsIcon sx={{ marginX: '30%' }} /> },
 
 ];

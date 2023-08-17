@@ -1,19 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // Reac hooks
 import { useState } from 'react';
 
 // MUI components
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
-import { Typography, TextField, Box,Button } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Link } from '@mui/material';
+import { Typography, TextField, Box, Button, Grid } from '@mui/material';
+
+import { Upload } from '@mui/icons-material';
 
 //Firestore functions
 import { getFirestore, doc, updateDoc, getDoc } from "firebase/firestore";
+import { getStorage, ref, getDownloadURL } from "firebase/storage"; //for storage functionality
+
+
+import uploadFile from '../utils/fileUpload';
+
 
 /**TaskDialog component */
 export default function TaskDialog(props) {
   /**
-   * props.steps
+   * props.step
    * props.isCurrentUser
    * props.handleClose
    * props.open
@@ -29,16 +36,23 @@ export default function TaskDialog(props) {
   if (props.isCurrentUser) {
     //if the dialog is for current user
     //return RenderSpecificDialog(props);
-    if(props.index != props.activeStep){
+    if (props.index !== props.activeStep) {
       return RenderNormalDialog(props); //current user can't edit
-    }else{
-      if((props.rejectedAt != -1) && (props.index > props.rejectedAt)){
+    } else {
+      if ((props.rejectedAt !== -1) && (props.index > props.rejectedAt)) {
         //There are previously rejected steps & current user step is after rejection
         //Current user should not be able to edit his step
         return RenderNormalDialog(props);
       }
-      else{
-        return RenderSpecificDialog(props); //current user can edit
+      else {
+        // if (props.step.completed) {
+        //   return RenderNormalDialog(props);
+        // }
+        // else {
+        //   return RenderSpecificDialog(props); //current user can edit
+        // }
+        return RenderSpecificDialog(props);
+
       }
       // return RenderSpecificDialog(props);
     }
@@ -104,8 +118,53 @@ export default function TaskDialog(props) {
  * @returns A dialog component with specific details
  */
 function RenderNormalDialog(props) {
+  const storage = getStorage();
 
-  const approved = props.step.approved ? "Approved" : "Not Approved";
+  const status = props.step.approved ? "Approved" : (props.step.completed ? "Rejected" : "Pending");
+  const [attachments, setAttachments] = useState([]);
+  console.log('Attachments 1st:', props.step.attachments);
+  //attachment file can be accessed through props.step
+  //attachment file can be accessed through props.step
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      //console.log('Attachments 2nd:', props.step.attachments);
+      //console.log('Step :', props.step);
+      //console.log('DocID :', props.docID);
+      //get file details and store in attachments
+      const tempArr = props.step.attachments;
+      const filesArr = [];
+
+      // Create an array of promises using getDownloadURL for each file
+      if (tempArr !== undefined) {
+        const downloadURLPromises = tempArr.map((file) => {
+          const fileRef = ref(storage, `tasks/${props.docID}/${props.step.user_id}/${file}`);
+          return getDownloadURL(fileRef);
+        });
+
+
+        try {
+          const downloadURLs = await Promise.all(downloadURLPromises);
+          // Map the tempArr and downloadURLs arrays to create the filesArr
+          tempArr.forEach((file, index) => {
+            const url = downloadURLs[index];
+            //console.log('url ', url);
+            filesArr.push({ name: file, link: url });
+          });
+
+          setAttachments(filesArr);
+          //console.log("filesArr", filesArr);
+        } catch (error) {
+          console.error("Error fetching download URLs", error);
+          // Handle the error if needed
+        }
+      } else {
+        console.log("tempArr is null");
+      }
+    }
+    fetchData();
+  }, [props.docID, props.step]);
 
   return (
     <div>
@@ -121,11 +180,11 @@ function RenderNormalDialog(props) {
         maxWidth="sm"
       >
         <DialogTitle id="alert-dialog-title">
-          Assigned to: {props.step.fullName}
+          {props.step.fullName}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <table>
+          <DialogContentText id="alert-dialog-description" sx={{ py: '1%' }}>
+            {/* <table>
               <tbody>
                 <tr>
                   <td><Typography variant='subtitle1' >Comments:</Typography></td>
@@ -133,18 +192,52 @@ function RenderNormalDialog(props) {
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Attachments:</Typography></td>
-                  {/*TODO: <td><Typography variant='subtitle1' >link1 link2 link3</Typography></td> */}
+                  <td><Typography variant='subtitle1' >
+                    {attachments.map(
+                      (file) => {
+                        return (<Link href={file.link} target='_blank' rel="noopener" underline='hover' sx={{ mx: '1%' }}>
+                          {file.name}</Link>);
+                      }
+                    )}
+                  </Typography></td>
                 </tr>
                 <tr>
-                  <td><Typography variant='subtitle1' >Reveiewd on:</Typography></td>
-                  <td><Typography variant='subtitle1' >{props.step.approved_date}</Typography></td>
+                  <td><Typography variant='subtitle1' >Reviewed on:</Typography></td>
+                  <td><Typography variant='subtitle1' >{props.step.timestamp}</Typography></td>
                 </tr>
                 <tr>
                   <td><Typography variant='subtitle1' >Status:</Typography></td>
                   <td><Typography variant='subtitle1' >{approved}</Typography></td>
                 </tr>
               </tbody>
-            </table>
+            </table> */}
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField value={status} label='Status' variant='filled'
+                  color={(status === "Approved" ? "success" : (status === "Rejected" ? "error" : "warning"))}
+                  focused InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField fullWidth value={props.step.comments} label='Comments' variant='filled' InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField fullWidth value={props.step.timestamp} label='Review Date' variant='filled' InputProps={{ readOnly: true, }} />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Typography variant='subtitle1' >Attachments:</Typography>
+                <Typography variant='subtitle1' >
+                  {attachments.map(
+                    (file) => {
+                      return (<Link href={file.link} target='_blank' rel="noopener" underline='hover' sx={{ mx: '1%' }}>
+                        {file.name}</Link>);
+                    }
+                  )}
+                </Typography>
+              </Grid>
+            </Grid>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -166,11 +259,20 @@ function RenderSpecificDialog(props) {
   const db = getFirestore();
 
   const [comment, setComment] = useState('');
-  const [approved, setApproved] = useState(false);
+  const [approved, setApproved] = useState(true);
   const [completed, setCompleted] = useState(false);
   // const [approvedDate, setApprovedDate] = useState('');
   const [attachements, setAttachments] = useState([]);
   const [timestamp, setTimestamp] = useState(Date());
+  const [selectedFiles, setSelectedFiles] = useState([]); //State to store files
+
+  /**Functions for file handling */
+  const handleFileInputChange = (event) => {
+    // Get the selected files from the file input
+    const files = event.target.files;
+    //setSelectedFiles(files);
+    setSelectedFiles(Array.from(files));
+  };
 
   const updateWorkflowElement = async (docID, workflowIndex, updatedData) => {
     try {
@@ -188,7 +290,7 @@ function RenderSpecificDialog(props) {
         //   ...updatedData
         // };
         workflow[workflowIndex] = {
-          user_id : props.step.user_id,
+          user_id: props.step.user_id,
           fullName: props.step.fullName,
           ...updatedData
         };
@@ -202,7 +304,7 @@ function RenderSpecificDialog(props) {
 
         console.log('Workflow element updated successfully!');
       }
-      else{
+      else {
         console.log("Document doesn't exist!");
       }
 
@@ -219,9 +321,20 @@ function RenderSpecificDialog(props) {
     setTimestamp(Date()); //get current timestamp
     setCompleted(true); //mark this step as completed
 
+    /**Upload files to firebase storage */
+    const attachmentNames = [];
+    selectedFiles.forEach(
+      (file) => {
+        //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
+        const fileLink = uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file);
+        console.log("File Link: ", fileLink);
+        attachmentNames.push(file.name);
+      }
+    );
+
     //Todo: Complete setAttachments function
-    setAttachments(['test.pdf']);
-    
+    setAttachments(attachmentNames);
+
     //store updated data in Json object
     const updatedData = {
       approved: approved,
@@ -259,15 +372,32 @@ function RenderSpecificDialog(props) {
                 label="Comment" multiline rows={2} placeholder='Add comments' value={comment}
               />
 
+              <input
+                id="file-upload"
+                type="file"
+                style={{ display: 'none' }}
+                multiple
+                onChange={handleFileInputChange}
+              />
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Attachments:</Typography>
-              <Button variant="outlined" sx={{ mx: '1%' }}>Add</Button>
+              {selectedFiles.length > 0 && (
+                <ul>
+                  {Array.from(selectedFiles).map((file, index) => (
+                    <li key={index}>{file.name}</li>
+                  ))}
+                </ul>
+              )}
+              <label htmlFor="file-upload">
+                <Button variant='outlined' startIcon={<Upload />} component="span">Select Files </Button>
+              </label>
 
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Status: {approved ? "Approve" : "Reject"}</Typography>
-              <Button variant="contained" sx={{ mx: '1%' }}
-
-                onClick={() => { setApproved(true) }}>Approve</Button>
-              <Button variant="contained" color='error' sx={{ mx: '1%' }}
-                onClick={() => { setApproved(false) }}>Reject</Button>
+              <Button sx={{ mx: '1%' }}
+                onClick={() => { setApproved(true) }}
+                variant={approved ? "contained" : "outlined"}>Approve</Button>
+              <Button color='error' sx={{ mx: '1%' }}
+                onClick={() => { setApproved(false) }}
+                variant={!approved ? "contained" : "outlined"}>Reject</Button>
 
               <Typography variant='subtitle1' sx={{ my: '1%' }}>Date:{timestamp}</Typography>
 
@@ -276,13 +406,13 @@ function RenderSpecificDialog(props) {
         </DialogContent>
         <DialogActions>
           <Button onClick={props.handleClose} variant="text" color='error'>Close</Button>
-          <Button onClick={() => { 
+          <Button onClick={() => {
             // if(completed){alert("You cannot edit after completing!")}
             // else{handleSave();}
             handleSave();
             props.handleClose();
-           }} autoFocus variant="outlined"
-          > Save </Button>
+          }} autoFocus variant="outlined"
+          > Submit </Button>
         </DialogActions>
       </Dialog>
     </div>
