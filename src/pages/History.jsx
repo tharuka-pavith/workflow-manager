@@ -1,11 +1,12 @@
 import React from 'react';
 
 // React hooks
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 //MUI components
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
-import { Container, Paper, Typography } from '@mui/material';
+import { Container, Paper, Typography, TextField, Box, IconButton } from '@mui/material';
+import InputAdornment from '@mui/material/InputAdornment';
 
 // React router
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,6 +15,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { collection, query, where, getDocs } from "firebase/firestore";
+
+//MUI icons
+import SearchIcon from '@mui/icons-material/Search';
+import RefreshIcon from '@mui/icons-material/Refresh';
 
 
 
@@ -39,7 +44,7 @@ const columns = [
 /**Organize data that should be included in the table*/
 function createData(due_date, initialized_date, name, description, attachments, assigned_to, docId) {
     const viewmore = <Link to="/dashboard/task">View more</Link>
-    return {initialized_date, due_date, name, description, attachments, assigned_to, docId };
+    return { initialized_date, due_date, name, description, attachments, assigned_to, docId };
 }
 
 /**TodoTask component */
@@ -48,7 +53,11 @@ function History() {
     const db = getFirestore();
     const navigate = useNavigate();
 
-    const [rows, setRows] = React.useState([]);
+    const [rows, setRows] = useState([]);
+    const [initialDataRows, setInitialDataRows] = useState([]);
+
+    const [searchQuery, setSearchQuery] = useState(''); //for search functionality
+
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -98,11 +107,12 @@ function History() {
                 const data = doc.data();
                 const due_date = data.due_date.toString();
                 const initialized_date = data.initialized_date;
-                const temp = createData(due_date,initialized_date, data.task_name,data.description, data.attachments, data.workflow[0].fullName, doc.id);
+                const temp = createData(due_date, initialized_date, data.task_name, data.description, data.attachments, data.workflow[0].fullName, doc.id);
                 tempArr.push(temp);
             });
 
             console.log("tempArr", tempArr);
+            setInitialDataRows(tempArr);
             setRows(tempArr);
         };
 
@@ -133,8 +143,25 @@ function History() {
     return (
         <Container maxWidth="lg">
             <Paper elevation={12} sx={{ p: '2%' }}>
-                <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Completed Tasks</Typography>
-
+                <Box display={'flex'} justifyContent="space-between">
+                    <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Completed Tasks</Typography>
+                    <Box>
+                    <TextField id="search-textfield" placeholder='Search by Task Name'
+                        InputProps={{
+                            startAdornment: ( <InputAdornment position="start"> <SearchIcon /> </InputAdornment> ),
+                        }}
+                        variant="outlined" size='small'
+                        value={searchQuery}
+                        onChange={(e)=>{
+                            setSearchQuery(e.target.value);
+                            const filteredTasks = initialDataRows.filter(task =>
+                                task.name.includes(searchQuery)
+                              );
+                            setRows(filteredTasks);
+                        }}/>
+                        <IconButton onClick={()=> {setRows(initialDataRows); setSearchQuery('')}}><RefreshIcon/></IconButton>
+                    </Box>
+                </Box>
                 <TableContainer sx={{ maxHeight: 500 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
