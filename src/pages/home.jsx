@@ -12,7 +12,7 @@ import StickyFooter from '../components/StickyFooter';
 
 
 // Assets
-import backgroundImage from '../assests/imgs/background.jpg';
+import backgroundImage from '../assests/imgs/Imagenew.png';
 
 // Custom styles for <Home>
 const styles = {
