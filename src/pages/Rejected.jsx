@@ -14,11 +14,11 @@ import { Link, useNavigate } from 'react-router-dom';
 // Firebase functions
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 //MUI icons
 import SearchIcon from '@mui/icons-material/Search';
 import RefreshIcon from '@mui/icons-material/Refresh';
-
 
 
 const columns = [
@@ -47,7 +47,7 @@ function createData(due_date, initialized_date, name, description, attachments, 
 }
 
 /**TodoTask component */
-function TodoTask() {
+function Rejected() {
     const auth = getAuth();
     const db = getFirestore();
     const navigate = useNavigate();
@@ -56,6 +56,7 @@ function TodoTask() {
     const [initialDataRows, setInitialDataRows] = useState([]);
 
     const [searchQuery, setSearchQuery] = useState(''); //for search functionality
+
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -95,28 +96,20 @@ function TodoTask() {
             const userRef = doc(db, "users", auth.currentUser.uid);
             const userSnap = await getDoc(userRef);
 
-            const todo_tasks = userSnap.data().assigned_tasks; //get all assigned tasks ids
-            console.log("todo tasks ", todo_tasks);
+            const q = query(collection(db, "rejected_tasks"), where("owner_id", "==", auth.currentUser.uid));
+            const querySnapshot = await getDocs(q);
 
-            const tempArr = await Promise.all(
-                todo_tasks.map(async (id) => {
-                    const taskRef = doc(db, "current_tasks", id);
-                    const taskSnap = await getDoc(taskRef);
-
-                    const data = taskSnap.data();
-                    console.log("data ", data);
-
-                    return createData(
-                        data.due_date.toString(),
-                        data.initialized_date,
-                        data.task_name,
-                        data.description,
-                        data.attachments,
-                        data.workflow[0].fullName,
-                        id
-                    );
-                })
-            );
+            const tempArr = [];
+            querySnapshot.forEach((doc) => {
+                // doc.data() is never undefined for query doc snapshots
+                //console.log(doc.id, " => ", doc.data());
+                const data = doc.data();
+                const due_date = data.due_date.toString();
+                const initialized_date = data.initialized_date;
+                const assigned = data.workflow.forEach((e) => { if (e.completed == false) return e.fullName });
+                const temp = createData(due_date, initialized_date, data.task_name, data.description, data.attachments, assigned, doc.id);
+                tempArr.push(temp);
+            });
 
             console.log("tempArr", tempArr);
             setInitialDataRows(tempArr);
@@ -143,7 +136,7 @@ function TodoTask() {
     /******** Used to navigate to the task component ******/
     const handleRowClick = (rowData) => {
         //console.log(rowData.docId);
-        navigate("/dashboard/task", { state: rowData.docId });
+        navigate("/dashboard/rejectedtask", { state: rowData.docId });
     };
     /******************************************************/
 
@@ -151,7 +144,7 @@ function TodoTask() {
         <Container maxWidth="lg">
             <Paper elevation={12} sx={{ p: '2%' }}>
                 <Box display={'flex'} justifyContent="space-between">
-                    <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Assigned Tasks</Typography>
+                    <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Rejected Tasks</Typography>
                     <Box>
                         <TextField id="search-textfield" placeholder='Search by Task Name'
                             InputProps={{
@@ -222,4 +215,4 @@ function TodoTask() {
 
 }
 
-export default TodoTask;
+export default Rejected;

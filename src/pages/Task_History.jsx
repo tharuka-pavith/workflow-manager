@@ -39,7 +39,7 @@ function mapTypes(task) {
 }
 
 /**Task component */
-function Task(props) {
+function Task_History(props) {
   const db = getFirestore();
   const storage = getStorage();
 
@@ -138,7 +138,7 @@ function Task(props) {
 
   useEffect(() => {
     const fetchData = async () => {
-        const docRef = doc(db, "current_tasks", docID);
+        const docRef = doc(db, "completed_tasks", docID);
         const docSnap = await getDoc(docRef);
 
         //console.log("doc data", docSnap.data());
@@ -167,6 +167,7 @@ function Task(props) {
 
           setAttachments(filesArr);
           //console.log("Attachments", filesArr);
+          setActiveStep(attachments.length-1);
         } catch (error) {
           console.error("Error fetching download URLs", error);
           // Handle the error if needed
@@ -310,5 +311,5 @@ function Task(props) {
   );
 }
 
-export default Task;
+export default Task_History;
 
