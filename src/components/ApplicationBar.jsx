@@ -76,7 +76,7 @@ function ApplicationBar() {
 
                     <Stack spacing={0.1} sx={{ flexGrow: 1 }}>
                         <Typography variant="h5" component="div" fontFamily={'sans-serif'}>
-                            WorkFlow
+                            WorkFlow Management System
                         </Typography>
                         {/* <Typography variant="subtitle1" component="div">
                             Faculty of Engineering - University of Ruhuna

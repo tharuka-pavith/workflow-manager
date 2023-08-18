@@ -17,7 +17,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 //import Link_router from 'react-router-dom';
 
-import backgroundImage from '../assests/imgs/background.jpg';
+import backgroundImage from '../assests/imgs/Imagenew1.avif';
 
 //Firebase functions
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
