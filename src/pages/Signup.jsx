@@ -55,21 +55,6 @@ function Signup() {
     const [passwordConf, setPasswordConf] = useState("");
 
     async function addUser(uid) {
-        //Try adding user to firestore database
-        // try {
-        //     const docRef = await addDoc(db, "users", {
-        //         user_id: uid,
-        //         first: fName,
-        //         last: lName,
-        //         mobile: phone,
-        //         email: email
-        //     });
-        //     console.log("Document written with ID: ", docRef.id);
-        // } catch (e) {
-        //     console.error("Error adding document: ", e);
-        // }
-        
-
         try {
             await setDoc(doc(db, "users", uid), {
                 user_id: uid,

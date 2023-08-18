@@ -30,6 +30,8 @@ import WorkflowSelect from '../components/WorkFlowSelect';
 import insertTask from '../utils/insertTask';
 //import uploadFile from '../utils/fileUpload';
 
+import { getAuth } from 'firebase/auth';
+
 
 const taskTypes = [
     {
@@ -54,7 +56,11 @@ const steps = ['Enter task details', 'Set the workflow', 'Confirm and submit']; 
 
 /**NewTask component */
 function NewTask_v1() {
+    const auth = getAuth();
 
+    useEffect(()=>{
+        console.log(auth.currentUser);
+    })
     const navigate = useNavigate();
 
     const [taskName, setTaskName] = useState('');

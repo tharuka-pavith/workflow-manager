@@ -6,6 +6,9 @@ import { getAuth } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 import {getFirestore} from "firebase/firestore";
+import { GoogleAuthProvider } from "firebase/auth";
+
+
 
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -35,5 +38,8 @@ export const storage = getStorage(app);
 
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
+
+//Google authentication
+export const provider = new GoogleAuthProvider();
 
 export default app;
