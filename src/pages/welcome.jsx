@@ -34,10 +34,10 @@ function Welcome() {
         <Container maxWidth='xlg' disableGutters >
             <Box>
                 <Paper elevation={10} sx={styles.paperStyles}>
-                    <Typography variant='h3' fontWeight={'xlarge'} fontFamily={'sans-serif'} gutterBottom>WorkFlow Management System</Typography>
+                    <Typography variant='h2' fontWeight={'xlarge'} fontFamily={'sans-serif'} gutterBottom>WorkFlow Management System</Typography>
                     <Typography variant='h4' fontFamily={'sans-serif'} gutterBottom>Transform the way you work and unlock new levels of efficiency and collaboration.</Typography>
                     <Typography variant='body1' fontSize='1.2rem' fontFamily={'sans-serif'} paragraph gutterBottom>
-                    Our University Workflow Management System is designed to revolutionize the way tasks and processes are managed at our university.
+                    Our University Workflow Management System is designed to revolutionize the way tasks and processes are managed at our institution.
                     By automating and optimizing workflows, we empower administrators, faculty members, staff, and students to work smarter, not harder.
                     </Typography>
 
