@@ -37,7 +37,7 @@ function AppRouter() {
         <Routes>
             <Route path="/home" element={<PublicRoute> <Home /> </PublicRoute>} >
                 <Route path="/home/welcome" element={<PublicRoute> <Welcome/> </PublicRoute>} />
-                <Route path="/home/login" element={<PublicRoute> <Login/> </PublicRoute>} />
+                <Route path="/home/login" element={<PublicRoute> <Login_v1/> </PublicRoute>} />
                 <Route path="/home/signup" element={<PublicRoute> <Signup/> </PublicRoute>} />
                 <Route path="*" element={<NotFound />} />
             </Route>
