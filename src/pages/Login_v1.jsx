@@ -20,13 +20,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assests/imgs/Imagenew1.avif';
 
 //Firebase functions
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAdditionalUserInfo } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import firebaseApp from '../firebase/firebaseConfig';
 
 import { useState } from 'react';
 
 // Custom components
 import CustomAlert from '../components/Alerts';
 import { logDOM } from '@testing-library/react';
+
+//mui icons
+import GoogleIcon from '@mui/icons-material/Google';
 
 function Copyright(props) {
   return (
@@ -47,54 +53,83 @@ const defaultTheme = createTheme();
 
 export default function SignInSide() {
 
-    const auth = getAuth();
+  const auth = getAuth();
+   // Initialize Cloud Firestore and get a reference to the service
+   const db = getFirestore(firebaseApp);
 
-    //States
-    const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [alert, setAlert] = useState({message:"", severity:"", open:false});
+  //States
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState({ message: "", severity: "", open: false });
 
-    //Handle alert closing
-    const handleAlertClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setAlert({message:'', severity:"", open:false});
-    };
+  //Form data
+  // const [fName, setfName] = useState("");
+  // const [lName, setlName] = useState("");
+  // const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
 
-    /**Handle th sign in function */
-    function handleSignIn() {
-      setPersistence(auth, browserSessionPersistence)
-  .then(() => {
-    // Existing and future Auth states are now persisted in the current
-    // session only. Closing the window would clear any existing state even
-    // if a user forgets to sign out.
-    // ...
-    // New sign-in will be persisted with session persistence.
-    //return signInWithEmailAndPassword(auth, email, password);
-    return signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-                console.log("Login Successful!!");
-                navigate("/dashboard/mytasks");
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorMessage);
-
-                setAlert({message:errorCode, severity:"error", open:true});
-            });
-  })
-  .catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-  });
-        
+  //Handle alert closing
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
     }
+    setAlert({ message: '', severity: "", open: false });
+  };
+
+  async function addUser(user) {
+    try {
+        await setDoc(doc(db, "users", user.uid), {
+            user_id: user.uid,
+            fName: user.displayName.split(" ")[0],
+            lName: user.displayName.split(" ")[1],
+            full_name: user.displayName,
+            mobile: user.phoneNumber,
+            email: user.email,
+            profile_pic_url: user.photoURL,
+            my_tasks: [],
+            assigned_tasks:[],
+            my_completed_tasks:[],
+            assigned_completed_tasks: []
+          });
+        console.log("Document written");
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+      
+}
+
+  /**Handle th sign in function */
+  function handleSignIn() {
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        //return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log("Login Successful!!");
+            navigate("/dashboard/mytasks");
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
+
+            setAlert({ message: errorCode, severity: "error", open: true });
+          });
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+
+  }
 
   // const handleSubmit = (event) => {
   //   event.preventDefault();
@@ -104,6 +139,38 @@ export default function SignInSide() {
   //     password: data.get('password'),
   //   });
   // };
+
+  function handleGoogleSignIn() {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    console.log('starting popup');
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        console.log("Login Successful!!");
+        console.log(user);
+        if(user.metadata.creationTime === user.metadata.lastSignInTime){ //new user
+          console.log("new user");
+          addUser(user);
+        }
+        navigate("/dashboard/mytasks");
+      }).catch((error) => {
+        // Handle Errors here.
+        //const errorCode = error.code;
+        //const errorMessage = error.message;
+        // The email of the user's account used.
+        //const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+        console.error(error);
+      });
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -139,7 +206,8 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
-            <Box  sx={{ mt: 1 }}>
+
+            <Box sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
                 required
@@ -149,7 +217,7 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
-                onChange={(event) =>setEmail(event.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
               />
               <TextField
                 margin="normal"
@@ -167,11 +235,11 @@ export default function SignInSide() {
                 label="Remember me"
               />
               <Button
-                
+
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={(e)=>handleSignIn()}
+                onClick={(e) => handleSignIn()}
               >
                 Sign In
               </Button>
@@ -187,6 +255,11 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
               </Grid>
+
+              <Button endIcon={<GoogleIcon />} fullWidth size='large' variant="outlined" sx={{ mt: '5%' }}
+              onClick={(e)=>handleGoogleSignIn()}>
+                Continue with Google
+              </Button>
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
