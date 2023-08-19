@@ -213,7 +213,7 @@ export default function Dashboard_v1() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            WorkFlow
+                            WorkFlow Management System
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -223,7 +223,7 @@ export default function Dashboard_v1() {
                         <IconButton color="inherit" onClick={handleProfileClick}>
                             {auth.currentUser !== null ? <Avatar>
                                 <img alt='person'
-                                    src={`https://avatars.dicebear.com/api/initials/${userName}.svg`} />
+                                    src={auth.currentUser.photoURL? auth.currentUser.photoURL:`https://avatars.dicebear.com/api/initials/${userName}.svg`} />
                             </Avatar> : "Login"}
                         </IconButton>
                     </Toolbar>
