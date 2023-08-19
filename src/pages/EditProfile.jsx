@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { Container, Paper, Typography, Button, Grid, TextField, Stack, MenuItem } from "@mui/material";
 
 // Firebase functions
-import { getAuth, updateProfile, updateEmail } from "firebase/auth";
+import { getAuth, updateProfile, updateEmail, sendPasswordResetEmail, sendEmailVerification } from "firebase/auth";
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 
 // Custom components and utility files
@@ -67,6 +67,31 @@ function EditProfile() {
     const [mobile, setMobile] = useState("");
     const [email, setEmail] = useState("");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    function handlePasswordResetEmail() {
+        const auth = getAuth();
+        sendPasswordResetEmail(auth, auth.currentUser.email)
+            .then(() => {
+                // Password reset email sent!
+                // ..
+                alert(`Password reset email sent to ${email}`);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ..
+            });
+    }
+
+    function handleVerificationEmail() {
+        const auth = getAuth();
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                // Email verification sent!
+                // ...
+                alert(`Email verification sent to ${auth.currentUser.email}`);
+            });
+    }
 
     //run when component loads
     useEffect(() => {
@@ -145,7 +170,7 @@ function EditProfile() {
             {/* <Paper elevation={0} sx={{ mt: '120px', width: '100%', mx: 'auto' }}> */}
             <Paper elevation={12} sx={{ p: '5%' }} >
                 <Typography variant='h5' textAlign='center' fontWeight="medium" sx={{ my: '10px' }}>Edit Profile</Typography>
-                
+
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
                         {/* <Grid item xs={12}>
@@ -169,6 +194,18 @@ function EditProfile() {
                         <Grid item xs={12}>
                             <TextField defaultValue={mobile} value={mobile} variant="outlined" label="Phone" type="phone"
                                 onChange={(event) => setMobile(event.target.value)} />
+                        </Grid>
+
+                        <Grid item xs={12} sx={{marginBottom: '0.1%'}}>
+                            <Button onClick={(e) => handlePasswordResetEmail()} variant="text" >
+                                Reset Password
+                            </Button>
+                        </Grid>
+
+                        <Grid item xs={12} sx={{marginTop: '0.1%'}}>
+                            <Button onClick={(e) => handleVerificationEmail()} variant="text" >
+                                Send email verification link
+                            </Button>
                         </Grid>
 
                         <Grid item xs={12}>
