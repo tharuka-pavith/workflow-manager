@@ -14,7 +14,7 @@ export default async function insertTask( taskName, dueDate, description, workfl
 
     try{
         /**Insert the task to the tasks collection */
-        
+        const assignees_ids = workflow.map((element)=>{return element.user_id});
         const updatedWorkflow = workflow.map((element) => ({ //add more required fields for workflow elemetns
             ...element,
             comments: '',
@@ -35,7 +35,8 @@ export default async function insertTask( taskName, dueDate, description, workfl
             due_date: date.toLocaleDateString('en-GB'),
             attachments: [], //TODO: work on attachments later
             description: description,
-            workflow: updatedWorkflow
+            workflow: updatedWorkflow,
+            assignees_ids: assignees_ids
         });
         console.log("Document written with ID: ", docRef.id); //logging
 
