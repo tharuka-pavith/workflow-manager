@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination } from '@mui/material';
 import { Container, Paper, Typography, TextField, Box, IconButton } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 // React router
 import { Link, useNavigate } from 'react-router-dom';
@@ -58,7 +60,7 @@ function History() {
 
     const [searchQuery, setSearchQuery] = useState(''); //for search functionality
 
-
+    const [tabIndex, setTabIndex] = useState(0);
     // useEffect(() => {
     //     const fetchData = async () => {
     //         const userRef = doc(db, "users", auth.currentUser.uid);
@@ -97,19 +99,30 @@ function History() {
             const userRef = doc(db, "users", auth.currentUser.uid);
             const userSnap = await getDoc(userRef);
 
-            const q = query(collection(db, "completed_tasks"), where("owner_id", "==", auth.currentUser.uid));
-            const querySnapshot = await getDocs(q);
+            // const q = query(collection(db, "completed_tasks"), where("owner_id", "==", auth.currentUser.uid));
+            // const querySnapshot = await getDocs(q);
+            var querySnapshot = null;
+            if (tabIndex === 0) { //my completed tasks
+                const q = query(collection(db, "completed_tasks"), where("owner_id", "==", auth.currentUser.uid));
+                querySnapshot = await getDocs(q);
+            } else { //completed assigned tasks
+                const q = query(collection(db, "completed_tasks"), where("assignees_ids", "array-contains", auth.currentUser.uid));
+                querySnapshot = await getDocs(q);
+                //console.log("assigned rejected tasks");
+            }
 
             const tempArr = [];
-            querySnapshot.forEach((doc) => {
-                // doc.data() is never undefined for query doc snapshots
-                //console.log(doc.id, " => ", doc.data());
-                const data = doc.data();
-                const due_date = data.due_date.toString();
-                const initialized_date = data.initialized_date;
-                const temp = createData(due_date, initialized_date, data.task_name, data.description, data.attachments, data.workflow[0].fullName, doc.id);
-                tempArr.push(temp);
-            });
+            if (querySnapshot !== null) {
+                querySnapshot.forEach((doc) => {
+                    // doc.data() is never undefined for query doc snapshots
+                    //console.log(doc.id, " => ", doc.data());
+                    const data = doc.data();
+                    const due_date = data.due_date.toString();
+                    const initialized_date = data.initialized_date;
+                    const temp = createData(due_date, initialized_date, data.task_name, data.description, data.attachments, data.workflow[0].fullName, doc.id);
+                    tempArr.push(temp);
+                });
+            }
 
             console.log("tempArr", tempArr);
             setInitialDataRows(tempArr);
@@ -117,7 +130,7 @@ function History() {
         };
 
         fetchData();
-    }, []);
+    }, [tabIndex]);
 
     /********* Used to manipulate the table **********/
     const [page, setPage] = React.useState(0);
@@ -140,28 +153,44 @@ function History() {
     };
     /******************************************************/
 
+    function a11yProps(index) {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
+    }
+
     return (
         <Container maxWidth="lg">
             <Paper elevation={12} sx={{ p: '2%' }}>
                 <Box display={'flex'} justifyContent="space-between">
                     <Typography variant='h5' textAlign='left' fontWeight="medium" sx={{ my: '10px' }}>Completed Tasks</Typography>
                     <Box>
-                    <TextField id="search-textfield" placeholder='Search by Task Name'
-                        InputProps={{
-                            startAdornment: ( <InputAdornment position="start"> <SearchIcon /> </InputAdornment> ),
-                        }}
-                        variant="outlined" size='small'
-                        value={searchQuery}
-                        onChange={(e)=>{
-                            setSearchQuery(e.target.value);
-                            const filteredTasks = initialDataRows.filter(task =>
-                                task.name.includes(searchQuery)
-                              );
-                            setRows(filteredTasks);
-                        }}/>
-                        <IconButton onClick={()=> {setRows(initialDataRows); setSearchQuery('')}}><RefreshIcon/></IconButton>
+                        <TextField id="search-textfield" placeholder='Search by Task Name'
+                            InputProps={{
+                                startAdornment: (<InputAdornment position="start"> <SearchIcon /> </InputAdornment>),
+                            }}
+                            variant="outlined" size='small'
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                const filteredTasks = initialDataRows.filter(task =>
+                                    task.name.includes(searchQuery)
+                                );
+                                setRows(filteredTasks);
+                            }} />
+                        <IconButton onClick={() => { setRows(initialDataRows); setSearchQuery('') }}><RefreshIcon /></IconButton>
                     </Box>
                 </Box>
+
+                <Box sx={{ py: '1%' }}>
+                    <Tabs value={tabIndex} onChange={(event, newValue) => { setTabIndex(newValue) }}
+                        aria-label="basic tabs example" centered variant="fullWidth" textColor="primary">
+                        <Tab label="My Tasks" {...a11yProps(0)} sx={{ textTransform: 'none', fontSize:16}} />
+                        <Tab label="Assigned Tasks" {...a11yProps(1)} sx={{ textTransform: 'none', fontSize: 16 }} />
+                    </Tabs>
+                </Box>
+
                 <TableContainer sx={{ maxHeight: 500 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
