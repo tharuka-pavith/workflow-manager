@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assests/imgs/Imagenew2.jpg';
 
 //Firebase functions
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAdditionalUserInfo } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, sendPasswordResetEmail } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from '../firebase/firebaseConfig';
@@ -38,8 +38,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://github.com/tharuka-pavith/workflow-manager">
+        WorkFlow
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -54,8 +54,8 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
 
   const auth = getAuth();
-   // Initialize Cloud Firestore and get a reference to the service
-   const db = getFirestore(firebaseApp);
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(firebaseApp);
 
   //States
   const navigate = useNavigate();
@@ -78,25 +78,25 @@ export default function SignInSide() {
 
   async function addUser(user) {
     try {
-        await setDoc(doc(db, "users", user.uid), {
-            user_id: user.uid,
-            fName: user.displayName.split(" ")[0],
-            lName: user.displayName.split(" ")[1],
-            full_name: user.displayName,
-            mobile: user.phoneNumber,
-            email: user.email,
-            profile_pic_url: user.photoURL,
-            my_tasks: [],
-            assigned_tasks:[],
-            my_completed_tasks:[],
-            assigned_completed_tasks: []
-          });
-        console.log("Document written");
+      await setDoc(doc(db, "users", user.uid), {
+        user_id: user.uid,
+        fName: user.displayName.split(" ")[0],
+        lName: user.displayName.split(" ")[1],
+        full_name: user.displayName,
+        mobile: user.phoneNumber,
+        email: user.email,
+        profile_pic_url: user.photoURL,
+        my_tasks: [],
+        assigned_tasks: [],
+        my_completed_tasks: [],
+        assigned_completed_tasks: []
+      });
+      console.log("Document written");
     } catch (e) {
-        console.error("Error adding document: ", e);
+      console.error("Error adding document: ", e);
     }
-      
-}
+
+  }
 
   /**Handle th sign in function */
   function handleSignIn() {
@@ -154,7 +154,7 @@ export default function SignInSide() {
         // IdP data available using getAdditionalUserInfo(result)
         console.log("Login Successful!!");
         console.log(user);
-        if(user.metadata.creationTime === user.metadata.lastSignInTime){ //new user
+        if (user.metadata.creationTime === user.metadata.lastSignInTime) { //new user
           console.log("new user");
           addUser(user);
         }
@@ -250,14 +250,14 @@ export default function SignInSide() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link to={"/home/signup"} variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
               </Grid>
 
               <Button endIcon={<GoogleIcon />} fullWidth size='large' variant="outlined" sx={{ mt: '5%' }}
-              onClick={(e)=>handleGoogleSignIn()}>
+                onClick={(e) => handleGoogleSignIn()}>
                 Continue with Google
               </Button>
               <Copyright sx={{ mt: 5 }} />
