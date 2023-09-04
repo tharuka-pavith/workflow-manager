@@ -11,6 +11,9 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import {  getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import firebaseApp from '../firebase/firebaseConfig';
 
+// Custom alerts
+import CustomAlert from '../components/Alerts';
+
 // Custom styles
 const styles = {
     paperStyles: {
@@ -54,6 +57,22 @@ function Signup() {
     const [password, setPassword] = useState("");
     const [passwordConf, setPasswordConf] = useState("");
 
+    /**Handle alerts */
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('success');
+
+    const handleAlertClick = () => {
+        setAlertOpen(true);
+      };
+      const handleAlertClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+        setAlertOpen(false);
+      };
+    /** */
+
     async function addUser(uid) {
         try {
             await setDoc(doc(db, "users", uid), {
@@ -78,11 +97,17 @@ function Signup() {
 
     function handleSignup() {
         if(password ==='' || passwordConf==='' || fName ==='' || lName ==='' || phone ==='' || email ===''){
-            alert('Please fill the required fields');
+            //alert('Please fill the required fields');
+            setAlertMessage('Please fill the required fields');
+            setAlertSeverity('error');
+            setAlertOpen(true);
             return;
         }
         if (passwordConf !== password) {
-            alert("Password doesn't match");
+            //alert("Password doesn't match");
+            setAlertMessage("Password doesn't match");
+            setAlertSeverity('error');
+            setAlertOpen(true);
             return;
         }
         //console.log(`${email} \n${password}`);
@@ -112,7 +137,16 @@ function Signup() {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 // ..
-                console.log(error.message);
+                //console.log(error.message);
+                if(error.code === 'auth/email-already-in-use'){
+                    setAlertMessage("Email already in use!");
+                }else if(error.code === "auth/weak-password"){
+                    setAlertMessage("Weak password!");
+                }else{
+                    setAlertMessage(error.code);
+                }
+                setAlertSeverity('error');
+                setAlertOpen(true);
             });
     }
 
@@ -164,7 +198,7 @@ function Signup() {
                 </Box>
 
             </Paper>
-
+        <CustomAlert open={alertOpen} handleClose={handleAlertClose} message={alertMessage} severity={alertSeverity}/>
         </Container>
 
     );

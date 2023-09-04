@@ -68,13 +68,21 @@ export default function SignInSide() {
   // const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  //Handle alert closing
-  const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setAlert({ message: '', severity: "", open: false });
-  };
+  /**Handle alerts */
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
+
+  const handleAlertClick = () => {
+      setAlertOpen(true);
+    };
+    const handleAlertClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setAlertOpen(false);
+    };
+  /** */
 
   async function addUser(user) {
     try {
@@ -119,14 +127,19 @@ export default function SignInSide() {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(errorMessage);
-
-            setAlert({ message: errorCode, severity: "error", open: true });
+            setAlertMessage(errorMessage);
+            setAlertSeverity('error');
+            setAlertOpen(true);
+            //setAlert({ message: errorCode, severity: "error", open: true });
           });
       })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
+        setAlertMessage(errorCode);
+        setAlertSeverity('error');
+        setAlertOpen(true);
       });
 
   }

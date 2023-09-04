@@ -11,12 +11,12 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 /**CustomAlert component */
 export default function CustomAlert(props) {
-    const { alert, handleClose } = props;
+    const { message, severity, open, handleClose } = props;
     return (
-        <Snackbar open={alert.open} autoHideDuration={2000} onClose={handleClose} 
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} 
         anchorOrigin={{ vertical:"bottom", horizontal:"right" }}>
-            <Alert severity={alert.severity} sx={{ width: '100%' }} onClose={handleClose}>
-                {alert.message}
+            <Alert severity={severity} sx={{ width: '100%' }} onClose={handleClose}>
+                {message}
             </Alert>
         </Snackbar>
     );
