@@ -4,6 +4,8 @@ import { Typography, TextField, Box, Button, Grid } from '@mui/material';
 import { Upload } from '@mui/icons-material';
 import { getFirestore, doc, updateDoc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
+import { getDatabase, ref as databaseRef, set } from "firebase/database";
+
 import uploadFile from '../utils/fileUpload';
 
 export default function TaskDialog_V1(props) {
@@ -244,6 +246,8 @@ export default function TaskDialog_V1(props) {
    * Call this function when user clicks save button
    */
   async function handleSave() {
+    const realtimeDB = getDatabase();
+
     setTimestamp(Date()); //get current timestamp
     setCompleted(true); //mark this step as completed
 
@@ -258,7 +262,7 @@ export default function TaskDialog_V1(props) {
         attachmentNames.push(file.name);
       }
     );
-  */
+    */
     const uploadPromises = selectedFiles.map((file) => {
       return uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file)
         .then((fileLink) => {
@@ -291,6 +295,17 @@ export default function TaskDialog_V1(props) {
     }
     console.log(updatedData);
     updateWorkflowElement(props.docID, props.index, updatedData);  //call the function to update workflow in Firebase
+    
+    if(!approved){
+      set(databaseRef(realtimeDB, 'notifications/' + props.owner + '/'+ props.docID), {
+        owner: props.owner,
+        task_name: "Your task",
+        description: "You have a rejected task",
+        type: 'Rejected Task',
+        severity: 'error',
+        path: '/dashboard/rejected'
+    });
+    }
   }
 
   /**

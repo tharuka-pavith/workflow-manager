@@ -181,8 +181,8 @@ export default function Dashboard_v1() {
                 setNotificationCount((prevCount) => prevCount + 1); // Update count based on previous count
                 setNotifications(newNotifications);
                 //console.log("Notifications data ", notifications);
-                setAlertMessage(`You have new task assigned: ${data.val().task_name}`);
-                setAlertSeverity('success');
+                setAlertMessage(`${data.val().type}: ${data.val().task_name}`);
+                setAlertSeverity(data.val().severity);
                 setAlertOpen(true);
                 playAudio();
             } else {
@@ -408,8 +408,17 @@ export default function Dashboard_v1() {
                     },
                   }}
             >
-                {notifications.map((e)=>{
-                    return(<><MenuItem onClick={handleClose}>{e.task_name}</MenuItem><Divider /></>)
+                {notifications.map((e) => {
+                    return (<><MenuItem onClick={() => { handleClose(); navigate(e.path) }}>
+                        <ListItemText>
+                            <Typography variant="subtitle2" style={{ display: 'block' }}>
+                                {e.task_name}
+                            </Typography>
+                            <Typography variant="caption" style={{ display: 'block' }} >
+                                {e.description}
+                            </Typography>
+                        </ListItemText>
+                    </MenuItem><Divider /></>)
                 })}
             </Menu>
             <CustomAlert open={alertOpen} handleClose={handleAlertClose} message={alertMessage} severity={alertSeverity}/>

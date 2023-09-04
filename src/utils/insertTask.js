@@ -78,7 +78,10 @@ export default async function insertTask( taskName, dueDate, description, workfl
             set(ref(realtimeDB, 'notifications/' + assignee_id + '/'+ docRef.id), {
                 owner: auth.currentUser.displayName,
                 task_name: taskName,
-                description: description
+                description: description,
+                type: 'New Task',
+                severity: 'info',
+                path: '/dashboard/todotasks'
             });
         })
 
