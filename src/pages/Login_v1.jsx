@@ -278,6 +278,7 @@ export default function SignInSide() {
           </Box>
         </Grid>
       </Grid>
+      <CustomAlert open={alertOpen} handleClose={handleAlertClose} message={alertMessage} severity={alertSeverity}/>
     </ThemeProvider>
   );
 }

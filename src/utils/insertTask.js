@@ -2,6 +2,7 @@
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { getDatabase, ref, set } from "firebase/database";
 
 import uploadFile from "./fileUpload";
 
@@ -11,6 +12,7 @@ import uploadFile from "./fileUpload";
 export default async function insertTask( taskName, dueDate, description, workflow, files){
     const db = getFirestore();
     const auth = getAuth();
+    const realtimeDB = getDatabase();
 
     try{
         /**Insert the task to the tasks collection */
@@ -70,6 +72,15 @@ export default async function insertTask( taskName, dueDate, description, workfl
                 assigned_tasks: arrayUnion(docRef.id) //adds element to an array but only element not already present
             });
         });
+
+        /**Set new notification for each assignees */
+        assignees_ids.forEach((assignee_id)=>{
+            set(ref(realtimeDB, 'notifications/' + assignee_id + '/'+ docRef.id), {
+                owner: auth.currentUser.displayName,
+                task_name: taskName,
+                description: description
+            });
+        })
 
     }catch (error){
         console.log(error);
