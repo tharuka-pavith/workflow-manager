@@ -57,6 +57,15 @@ function Signup() {
     const [password, setPassword] = useState("");
     const [passwordConf, setPasswordConf] = useState("");
 
+    /* Validate email */
+    function validateEmail(email) {
+        // Define a regular expression pattern for the email
+        const emailPattern = /@engug\.ruh\.ac\.lk$/;
+      
+        // Use the test method to check if the email matches the pattern
+        return emailPattern.test(email);
+      }
+
     /**Handle alerts */
     const [alertOpen, setAlertOpen] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
@@ -76,6 +85,7 @@ function Signup() {
     async function addUser(uid) {
         try {
             await setDoc(doc(db, "users", uid), {
+                is_student: true,
                 user_id: uid,
                 fName: fName,
                 lName: lName,
@@ -106,6 +116,12 @@ function Signup() {
         if (passwordConf !== password) {
             //alert("Password doesn't match");
             setAlertMessage("Password doesn't match");
+            setAlertSeverity('error');
+            setAlertOpen(true);
+            return;
+        }
+        if(!validateEmail(email)){
+            setAlertMessage("You should use your university email");
             setAlertSeverity('error');
             setAlertOpen(true);
             return;
