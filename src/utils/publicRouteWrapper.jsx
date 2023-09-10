@@ -15,16 +15,17 @@ const  PublicRoute = ({children}) => {
         //If there is a current user, navigate to /dashboard
         // navigate(); //We cant use navigate() since component is not rendered
         // return <Navigate to="/dashboard/newtask" />
-        signOut(auth).then(() => {
-            // Sign-out successful.
-                console.log("Signed out successfully");
-                return(<Navigate to="/dashboard/newtask" />);
-            }).catch((error) => {
-            // An error happened.
-            console.log("Error in signout");
-            console.log(error.message);
+        // signOut(auth).then(() => {
+        //     // Sign-out successful.
+        //         console.log("Signed out successfully");
+        //         return(<Navigate to="/dashboard/newtask" />);
+        //     }).catch((error) => {
+        //     // An error happened.
+        //     console.log("Error in signout");
+        //     console.log(error.message);
     
-            });
+        //     });
+        return(<Navigate to="/dashboard/newtask" />);
     }
 
     //return();

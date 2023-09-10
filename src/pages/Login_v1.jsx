@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import backgroundImage from '../assests/imgs/Imagenew2.jpg';
 
 //Firebase functions
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, sendPasswordResetEmail } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from "firebase/auth";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from '../firebase/firebaseConfig';
@@ -33,6 +33,7 @@ import { logDOM } from '@testing-library/react';
 
 //mui icons
 import GoogleIcon from '@mui/icons-material/Google';
+import { useEffect } from 'react';
 
 function Copyright(props) {
   return (
@@ -61,6 +62,12 @@ export default function SignInSide() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [alert, setAlert] = useState({ message: "", severity: "", open: false });
+
+  useEffect(()=>{
+    if(auth.currentUser !== null){
+      navigate('/dashboard/newtask');
+    }
+  });
 
   //Form data
   // const [fName, setfName] = useState("");
@@ -108,7 +115,7 @@ export default function SignInSide() {
 
   /**Handle th sign in function */
   function handleSignIn() {
-    setPersistence(auth, browserSessionPersistence)
+    setPersistence(auth, browserLocalPersistence)
       .then(() => {
         // Existing and future Auth states are now persisted in the current
         // session only. Closing the window would clear any existing state even

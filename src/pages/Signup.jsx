@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //React router
 import { useNavigate } from 'react-router-dom';
@@ -56,6 +56,12 @@ function Signup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConf, setPasswordConf] = useState("");
+
+    useEffect(()=>{
+        if(auth.currentUser !== null){
+          navigate('/dashboard/newtask');
+        }
+      });
 
     /* Validate email */
     function validateEmail(email) {
