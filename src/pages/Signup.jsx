@@ -4,25 +4,29 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // MUI components
-import {Container, Paper, Typography, TextField, Grid, Box, Button} from '@mui/material';
+import {Container, Paper, Typography, TextField, Grid, Box, Button, Divider} from '@mui/material';
 
 // Firebase functions
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
 import {  getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import firebaseApp from '../firebase/firebaseConfig';
 
 // Custom alerts
 import CustomAlert from '../components/Alerts';
 
+//icons
+import GoogleIcon from '@mui/icons-material/Google';
+
 // Custom styles
 const styles = {
     paperStyles: {
         // margin: "32px",
-        marginTop: "5rem",
+        marginTop: "4rem",
         width: "100%",
         borderRadius: '10px',
         // height: "600px",
-        padding: "5%",
+        padding: "3%",
         backgroundColor: "rgb(255,255,255,0.97)"
     },
     gridStyle: {
@@ -172,11 +176,44 @@ function Signup() {
             });
     }
 
+    function handleGoogleSignIn() {
+        const auth = getAuth();
+        const provider = new GoogleAuthProvider();
+        console.log('starting popup');
+        signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            // IdP data available using getAdditionalUserInfo(result)
+            console.log("Login Successful!!");
+            console.log(user);
+            if (user.metadata.creationTime === user.metadata.lastSignInTime) { //new user
+              console.log("new user");
+              addUser(user);
+            }
+            navigate("/dashboard/mytasks");
+          }).catch((error) => {
+            // Handle Errors here.
+            //const errorCode = error.code;
+            //const errorMessage = error.message;
+            // The email of the user's account used.
+            //const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+            console.error(error);
+          });
+      }
+
     return (
         <Container maxWidth="sm">
             <Paper elevation={4} sx={styles.paperStyles}>
-                <Typography variant='h4' textAlign={'center'} fontWeight="medium" sx={{ my: '10px' }}>Signup</Typography>
+                <Typography variant='h4' textAlign={'center'} fontWeight="medium" sx={{ my: '5px' }}>Signup</Typography>
 
+                <Divider><Typography variant='body2' textAlign={'center'}  sx={{ my: '10px' }}>For Students</Typography></Divider>
                 <Box sx={styles.gridStyle}>
                     <Grid container={true} spacing={4} >
                         <Grid item xs={6}>
@@ -216,6 +253,11 @@ function Signup() {
                         </Grid>
                     </Grid>
 
+                    <Divider><Typography variant='body2' textAlign={'center'} sx={{ my: '10px' }}>For Staff</Typography></Divider>
+                    <Button endIcon={<GoogleIcon />} fullWidth size='large' variant="outlined" sx={{ mt: '2%' }}
+                        onClick={(e) => handleGoogleSignIn()}>
+                        Continue with Google
+                    </Button>
 
                 </Box>
 
