@@ -32,6 +32,8 @@ export default function TaskDialog_V1(props) {
   const [timestamp, setTimestamp] = useState(Date());
   const [selectedFiles, setSelectedFiles] = useState([]);
 
+  const [isUploading, setIsUploading] = useState(false);
+
   const fetchData = async () => {
     //get file details and store in attachments
     //console.log('length', props.workflow.length);
@@ -111,7 +113,7 @@ export default function TaskDialog_V1(props) {
         //if this is the final step
         if ((props.workflow.length - 1 === props.index) && approved) {
           moveTaskToCompletedTasks_v2(docID);
-        }else if(!approved){
+        } else if (!approved) {
           moveTaskToRejectedTasks_v2(docID);
         }
       }
@@ -126,7 +128,7 @@ export default function TaskDialog_V1(props) {
   };
 
   /**Move the task to completed_tasks collection */
-  async function moveTaskToCompletedTasks_v2(docID) { 
+  async function moveTaskToCompletedTasks_v2(docID) {
     try {
       // Get the current task
       const currentTaskDocRef = doc(db, "current_tasks", docID);
@@ -242,69 +244,104 @@ export default function TaskDialog_V1(props) {
   }
 
 
+  useEffect(() => {
+    // This block of code will run every time attachments state changes
+    if (attachments.length > 0) {
+      // Now you can perform actions that depend on attachments being updated
+      updateWorkflowElement(props.docID, props.index, {
+        approved: approved,
+        completed: true,
+        comments: comment,
+        timestamp: timestamp,
+        attachments: attachments
+      });
+    }
+  }, [attachments]); // Watch for changes in attachments state
+  
   /**
    * Call this function when user clicks save button
    */
   async function handleSave() {
-    const realtimeDB = getDatabase();
+    setIsUploading(true);
+    try {
+      const realtimeDB = getDatabase();
 
-    setTimestamp(Date()); //get current timestamp
-    setCompleted(true); //mark this step as completed
+      await setTimestamp(Date()); //get current timestamp
+      await setCompleted(true); //mark this step as completed
 
-    /**Upload files to firebase storage */
-    const attachmentNames = [];
-    /*
-    selectedFiles.forEach(
-      (file) => {
-        //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
-        const fileLink = uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file);
-        console.log("File Link: ", fileLink);
-        attachmentNames.push(file.name);
-      }
-    );
-    */
-    const uploadPromises = selectedFiles.map((file) => {
-      return uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file)
-        .then((fileLink) => {
+      /**Upload files to firebase storage */
+      const attachmentNames = [];
+      /*
+      selectedFiles.forEach(
+        (file) => {
+          //Upload path:"tasks/{task_id}/{user_id}/{file_name}"
+          const fileLink = uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file);
           console.log("File Link: ", fileLink);
-          //attachmentNames.push(file.name);
-          //console.log("New attachment",file.name);
-        })
-        .catch((error) => {
-          console.error("Error uploading file:", error);
+          attachmentNames.push(file.name);
+        }
+      );
+      */
+      const uploadPromises = selectedFiles.map((file) => {
+        return uploadFile(`tasks/${props.docID}/${props.step.user_id}/${file.name}`, file)
+          .then((fileLink) => {
+            console.log("File Link: ", fileLink);
+            //attachmentNames.push(file.name);
+            //console.log("New attachment",file.name);
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+          });
+      });
+
+
+      await Promise.all(uploadPromises); //wait until all promises are done
+
+      await (()=>{
+        selectedFiles.forEach(element => {
+          attachmentNames.push(element.name);
         });
-    });
+      }) ();
+      
 
+      //Todo: Complete setAttachments function
+      await setAttachments(attachmentNames);
 
-    await Promise.all(uploadPromises); //wait until all promises are done
-
-    selectedFiles.forEach(element => {
-      attachmentNames.push(element.name);
-    });
-
-    //Todo: Complete setAttachments function
-    setAttachments(attachmentNames);
-
-    //store updated data in Json object
-    const updatedData = {
-      approved: approved,
-      completed: true,
-      comments: comment,
-      timestamp: timestamp,
-      attachments: attachments
-    }
-    console.log(updatedData);
-    updateWorkflowElement(props.docID, props.index, updatedData);  //call the function to update workflow in Firebase
+      //store updated data in Json object
+      const updatedData = await (() => {
+        return {
+          approved: approved,
+          completed: true,
+          comments: comment,
+          timestamp: timestamp,
+          attachments: attachments
+        };
+      })();
     
-    if(!approved){
-      set(databaseRef(realtimeDB, 'notifications/' + props.owner + '/'+ props.docID), {
-        owner: props.owner,
-        task_name: "Your task",
-        description: "You have a rejected task",
-        type: 'Rejected Task',
-        severity: 'error',
-        path: '/dashboard/rejected'
-    });
+      // const updatedData = {
+      //   approved: approved,
+      //   completed: true,
+      //   comments: comment,
+      //   timestamp: timestamp,
+      //   attachments: attachments
+      // }
+      //console.log(updatedData);
+      await updateWorkflowElement(props.docID, props.index, updatedData);  //call the function to update workflow in Firebase
+
+      if (!approved) { //notification
+        await set(databaseRef(realtimeDB, 'notifications/' + props.owner + '/' + props.docID), {
+          owner: props.owner,
+          task_name: "Your task",
+          description: "You have a rejected task",
+          type: 'Rejected Task',
+          severity: 'error',
+          path: '/dashboard/rejected'
+        });
+      }
+      setIsUploading(false);
+      props.handleClose();
+    } catch (error) {
+      console.error('Error handling save:', error);
+      setIsUploading(false);
     }
   }
 
@@ -443,13 +480,22 @@ export default function TaskDialog_V1(props) {
           </DialogContent>
           <DialogActions>
             <Button onClick={props.handleClose} variant="text" color='error'>Close</Button>
-            <Button onClick={() => {
+            {/* <Button onClick={() => {
               // if(completed){alert("You cannot edit after completing!")}
               // else{handleSave();}
               handleSave();
               props.handleClose();
             }} autoFocus variant="outlined"
+            > Submit </Button> */}
+            <Button onClick={() => {
+              if (!isUploading) { // Only allow click when not uploading
+                handleSave();
+                // props.handleClose();
+              }
+            }} autoFocus variant="outlined"
+              disabled={isUploading} // Disable the button when uploading
             > Submit </Button>
+
           </DialogActions>
         </Dialog>
       </div>
