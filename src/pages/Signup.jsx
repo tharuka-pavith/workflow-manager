@@ -111,8 +111,7 @@ function Signup() {
             console.log("Document written");
         } catch (e) {
             console.error("Error adding document: ", e);
-        }
-          
+        }    
     }
 
     function handleSignup() {
@@ -192,7 +191,29 @@ function Signup() {
             console.log(user);
             if (user.metadata.creationTime === user.metadata.lastSignInTime) { //new user
               console.log("new user");
-              addUser(user);
+              const add_user = async (user) =>{
+                try {
+                    await setDoc(doc(db, "users", user.uid), {
+                      is_student: false,
+                      user_id: user.uid,
+                      fName: user.displayName.split(" ")[0],
+                      lName: user.displayName.split(" ")[1],
+                      full_name: user.displayName,
+                      mobile: user.phoneNumber,
+                      email: user.email,
+                      profile_pic_url: user.photoURL,
+                      my_tasks: [],
+                      assigned_tasks: [],
+                      my_completed_tasks: [],
+                      assigned_completed_tasks: []
+                    });
+                    console.log("Document written");
+                  } catch (e) {
+                    console.error("Error adding document: ", e);
+                  }
+              }
+              //addUser(auth.currentUser);
+              add_user(auth.currentUser);
             }
             navigate("/dashboard/mytasks");
           }).catch((error) => {
