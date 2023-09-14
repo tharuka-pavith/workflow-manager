@@ -94,6 +94,7 @@ export default function SignInSide() {
   async function addUser(user) {
     try {
       await setDoc(doc(db, "users", user.uid), {
+        is_student: false,
         user_id: user.uid,
         fName: user.displayName.split(" ")[0],
         lName: user.displayName.split(" ")[1],
@@ -250,10 +251,10 @@ export default function SignInSide() {
                 autoComplete="current-password"
                 onChange={(event) => setPassword(event.target.value)}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
 
                 fullWidth
@@ -264,11 +265,11 @@ export default function SignInSide() {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
+                {/* <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
                   </Link>
-                </Grid>
+                </Grid> */}
                 <Grid item>
                   <Link to={"/home/signup"} variant="body2">
                     {"Don't have an account? Sign Up"}
