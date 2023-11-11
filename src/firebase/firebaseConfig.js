@@ -10,6 +10,7 @@ import { GoogleAuthProvider } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
 
+
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Use "dotenv": "^16.0.3", in package.json if necessary

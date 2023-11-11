@@ -21,6 +21,7 @@ import backgroundImage from '../assests/imgs/Imagenew2.jpg';
 
 //Firebase functions
 import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from "firebase/auth";
+
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from '../firebase/firebaseConfig';
@@ -34,6 +35,7 @@ import { logDOM } from '@testing-library/react';
 //mui icons
 import GoogleIcon from '@mui/icons-material/Google';
 import { useEffect } from 'react';
+
 
 function Copyright(props) {
   return (
@@ -111,6 +113,63 @@ export default function SignInSide() {
     } catch (e) {
       console.error("Error adding document: ", e);
     }
+    setAlert({ message: '', severity: "", open: false });
+  };
+
+  async function addUser(user) {
+    try {
+        await setDoc(doc(db, "users", user.uid), {
+            user_id: user.uid,
+            fName: user.displayName.split(" ")[0],
+            lName: user.displayName.split(" ")[1],
+            full_name: user.displayName,
+            mobile: user.phoneNumber,
+            email: user.email,
+            profile_pic_url: user.photoURL,
+            my_tasks: [],
+            assigned_tasks:[],
+            my_completed_tasks:[],
+            assigned_completed_tasks: []
+          });
+        console.log("Document written");
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
+      
+}
+
+  /**Handle th sign in function */
+  function handleSignIn() {
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        //return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log("Login Successful!!");
+            navigate("/dashboard/mytasks");
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
+
+            setAlert({ message: errorCode, severity: "error", open: true });
+          });
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+
+  }
 
   }
 
@@ -176,6 +235,7 @@ export default function SignInSide() {
         console.log("Login Successful!!");
         console.log(user);
         if (user.metadata.creationTime === user.metadata.lastSignInTime) { //new user
+
           console.log("new user");
           addUser(user);
         }
@@ -279,6 +339,7 @@ export default function SignInSide() {
 
               <Button endIcon={<GoogleIcon />} fullWidth size='large' variant="outlined" sx={{ mt: '5%' }}
                 onClick={(e) => handleGoogleSignIn()}>
+
                 Continue with Google
               </Button>
               <Copyright sx={{ mt: 5 }} />
