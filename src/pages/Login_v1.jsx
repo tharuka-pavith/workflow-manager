@@ -17,10 +17,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
 //import Link_router from 'react-router-dom';
 
-import backgroundImage from '../assests/imgs/Imagenew1.avif';
+import backgroundImage from '../assests/imgs/Imagenew2.jpg';
 
 //Firebase functions
-import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, getAdditionalUserInfo } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, setPersistence, browserSessionPersistence, browserLocalPersistence } from "firebase/auth";
+
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth"; //for google signin
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from '../firebase/firebaseConfig';
@@ -33,13 +34,15 @@ import { logDOM } from '@testing-library/react';
 
 //mui icons
 import GoogleIcon from '@mui/icons-material/Google';
+import { useEffect } from 'react';
+
 
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://github.com/tharuka-pavith/workflow-manager">
+        WorkFlow
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -54,13 +57,19 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
 
   const auth = getAuth();
-   // Initialize Cloud Firestore and get a reference to the service
-   const db = getFirestore(firebaseApp);
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(firebaseApp);
 
   //States
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [alert, setAlert] = useState({ message: "", severity: "", open: false });
+
+  useEffect(()=>{
+    if(auth.currentUser !== null){
+      navigate('/dashboard/newtask');
+    }
+  });
 
   //Form data
   // const [fName, setfName] = useState("");
@@ -68,10 +77,41 @@ export default function SignInSide() {
   // const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
 
-  //Handle alert closing
-  const handleAlertClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
+  /**Handle alerts */
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertSeverity, setAlertSeverity] = useState('success');
+
+  const handleAlertClick = () => {
+      setAlertOpen(true);
+    };
+    const handleAlertClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setAlertOpen(false);
+    };
+  /** */
+
+  async function addUser(user) {
+    try {
+      await setDoc(doc(db, "users", user.uid), {
+        is_student: false,
+        user_id: user.uid,
+        fName: user.displayName.split(" ")[0],
+        lName: user.displayName.split(" ")[1],
+        full_name: user.displayName,
+        mobile: user.phoneNumber,
+        email: user.email,
+        profile_pic_url: user.photoURL,
+        my_tasks: [],
+        assigned_tasks: [],
+        my_completed_tasks: [],
+        assigned_completed_tasks: []
+      });
+      console.log("Document written");
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
     setAlert({ message: '', severity: "", open: false });
   };
@@ -131,6 +171,46 @@ export default function SignInSide() {
 
   }
 
+  }
+
+  /**Handle th sign in function */
+  function handleSignIn() {
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        //return signInWithEmailAndPassword(auth, email, password);
+        return signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log("Login Successful!!");
+            navigate("/dashboard/mytasks");
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorMessage);
+            setAlertMessage(errorMessage);
+            setAlertSeverity('error');
+            setAlertOpen(true);
+            //setAlert({ message: errorCode, severity: "error", open: true });
+          });
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setAlertMessage(errorCode);
+        setAlertSeverity('error');
+        setAlertOpen(true);
+      });
+
+  }
+
   // const handleSubmit = (event) => {
   //   event.preventDefault();
   //   const data = new FormData(event.currentTarget);
@@ -154,7 +234,8 @@ export default function SignInSide() {
         // IdP data available using getAdditionalUserInfo(result)
         console.log("Login Successful!!");
         console.log(user);
-        if(user.metadata.creationTime === user.metadata.lastSignInTime){ //new user
+        if (user.metadata.creationTime === user.metadata.lastSignInTime) { //new user
+
           console.log("new user");
           addUser(user);
         }
@@ -230,10 +311,10 @@ export default function SignInSide() {
                 autoComplete="current-password"
                 onChange={(event) => setPassword(event.target.value)}
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
 
                 fullWidth
@@ -244,20 +325,21 @@ export default function SignInSide() {
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
+                {/* <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
                   </Link>
-                </Grid>
+                </Grid> */}
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link to={"/home/signup"} variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
               </Grid>
 
               <Button endIcon={<GoogleIcon />} fullWidth size='large' variant="outlined" sx={{ mt: '5%' }}
-              onClick={(e)=>handleGoogleSignIn()}>
+                onClick={(e) => handleGoogleSignIn()}>
+
                 Continue with Google
               </Button>
               <Copyright sx={{ mt: 5 }} />
@@ -265,6 +347,7 @@ export default function SignInSide() {
           </Box>
         </Grid>
       </Grid>
+      <CustomAlert open={alertOpen} handleClose={handleAlertClose} message={alertMessage} severity={alertSeverity}/>
     </ThemeProvider>
   );
 }

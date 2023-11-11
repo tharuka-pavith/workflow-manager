@@ -11,7 +11,7 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 // Firebase components
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, where, query } from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -35,7 +35,8 @@ export default function WorkflowSelect(props) {
   useEffect(() => {
     const fetchUsersData = async () => {
       try {
-        const usersRef = collection(db, 'users');
+        //const usersRef = collection(db, 'users');
+        const usersRef = query(collection(db, "users"), where("is_student", "!=", true));
         const usersSnapshot = await getDocs(usersRef);
 
         const usersDataArray = [];

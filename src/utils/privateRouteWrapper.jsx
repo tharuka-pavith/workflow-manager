@@ -1,23 +1,36 @@
 // Firebase functions
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 // React router
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const  PrivateRoute = ({children}) => {
-    const  auth = getAuth();
-    //const navigate = useNavigate()
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
-    if (auth.currentUser !== null){
-         // If there is a current user, render the passed down component
+    useEffect(() => {
+        const auth = getAuth();
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            setUser(user);
+          } else {
+            setUser(null);
+            navigate("/home/login");
+          }
+        });
+    
+        // Clean up the listener when the component unmounts
+        return () => unsubscribe();
+      }, [navigate]);
+
+
+    if (user) {
         return children;
-    }else{
-        //If there is no current user, navigate to /home/login
-        // navigate("/home/logn"); //We cant use navigate() since component is not rendered
-        return <Navigate to="/home/login" />
-    }
+      } else {
+        return null;
+      }
 
-    //return();
 }
 
 export default PrivateRoute;
